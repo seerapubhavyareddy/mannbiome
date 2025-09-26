@@ -1,0 +1,215 @@
+/* components/Modal/RecommendationsSection.css */
+.recommendations-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.recommendation-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.recommendation-card-header {
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.recommendation-card-title {
+  font-size: 20px;
+  color: #00BFA5;
+  margin: 0;
+  font-weight: 600;
+}
+
+.recommendation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recommendation-item {
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.recommendation-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.recommendation-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.recommendation-name {
+  font-weight: 500;
+  color: #2C3E50;
+  font-size: 16px;
+}
+
+.recommendation-checkmark {
+  color: #00BFA5;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.recommendation-description {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.recommendation-dosage {
+  color: #555;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.recommendation-reason {
+  color: #555;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.no-recommendations {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 20px;
+}
+
+.recommendations-loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* Doctor's Remarks Section */
+.doctor-remarks-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.doctor-remarks-title {
+  font-size: 20px;
+  color: #2C3E50;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.doctor-remarks-content {
+  border-bottom: 1px solid #f5f5f5;
+  min-height: 80px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 8px;
+  color: #999;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doctor-remarks-content:empty::before {
+  content: "No remarks from your doctor at this time.";
+}
+
+/* Disclaimer Section */
+.disclaimer-section {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e9ecef;
+}
+
+.disclaimer-title {
+  color: #2C3E50;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.disclaimer-text {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .recommendations-section {
+    padding: 20px;
+  }
+  
+  .recommendation-card {
+    padding: 16px;
+  }
+  
+  .recommendation-card-title {
+    font-size: 18px;
+  }
+  
+  .recommendation-name {
+    font-size: 15px;
+  }
+  
+  .doctor-remarks-section {
+    padding: 16px;
+  }
+  
+  .doctor-remarks-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recommendations-section {
+    padding: 16px;
+  }
+  
+  .recommendation-card {
+    padding: 12px;
+  }
+  
+  .recommendation-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .recommendation-checkmark {
+    align-self: flex-end;
+    margin-top: -20px;
+  }
+}

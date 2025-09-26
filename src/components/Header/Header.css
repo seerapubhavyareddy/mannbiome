@@ -1,0 +1,575 @@
+/* components/Header/Header.css - Mobile Enhanced Header Styles */
+
+/* ================================
+   BASIC HEADER STYLES
+   ================================ */
+
+.portal-header {
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #eee;
+}
+
+.main-nav {
+    background-color: #fff;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 70px;
+    position: relative;
+}
+
+/* ================================
+   LEFT SECTION (Logo + Home)
+   ================================ */
+
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.left-section img {
+    height: 40px;
+    transition: height 0.3s ease;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 15px;
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    color: #00BFA5;
+}
+
+/* ================================
+   TABS SECTION (Desktop)
+   ================================ */
+
+.tabs-section {
+    display: flex;
+    height: 100%;
+    position: relative;
+}
+
+.tab {
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    height: 100%;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.tab:hover {
+    background-color: rgba(0, 191, 165, 0.05);
+}
+
+.tab.active {
+    border-bottom-color: #00BFA5;
+    color: #00BFA5;
+    background-color: rgba(0, 191, 165, 0.05);
+}
+
+.tab svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+}
+
+.tab:hover svg {
+    transform: scale(1.1);
+}
+
+/* ================================
+   USER MENU
+   ================================ */
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.user-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #00BFA5;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.user-icon:hover {
+    background-color: #00A693;
+    transform: scale(1.05);
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+}
+
+.logout-button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #555;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.logout-button:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-1px);
+}
+
+/* ================================
+   MOBILE MENU TOGGLE (Hidden by default)
+   ================================ */
+
+.mobile-nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.mobile-nav-toggle:hover {
+    background-color: rgba(0, 191, 165, 0.1);
+}
+
+.mobile-nav-toggle svg {
+    width: 24px;
+    height: 24px;
+    stroke: #333;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ================================
+   MOBILE TABS WRAPPER (Hidden by default)
+   ================================ */
+
+.mobile-tabs-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.tabs-section.mobile {
+    position: fixed;
+    top: 70px;
+    left: -100%;
+    width: 100%;
+    height: auto;
+    background: white;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 99;
+    padding: 20px 0;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+    border-bottom: 1px solid #eee;
+}
+
+.tabs-section.mobile.open {
+    left: 0;
+}
+
+.tabs-section.mobile .tab {
+    width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #f0f0f0;
+    justify-content: flex-start;
+    border-radius: 0;
+    font-size: 16px;
+}
+
+.tabs-section.mobile .tab:last-child {
+    border-bottom: none;
+}
+
+.tabs-section.mobile .tab.active {
+    border-bottom: 1px solid #f0f0f0;
+    border-left: 4px solid #00BFA5;
+    background-color: rgba(0, 191, 165, 0.1);
+}
+
+.tabs-section.mobile .nav-link {
+    width: 100%;
+    height: 50px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    font-size: 16px;
+}
+
+/* ================================
+   TABLET RESPONSIVE (768px - 992px)
+   ================================ */
+
+@media (max-width: 992px) and (min-width: 769px) {
+    .nav-content {
+        padding: 0 15px;
+    }
+    
+    .tab {
+        padding: 0 15px;
+        font-size: 14px;
+    }
+    
+    .left-section {
+        gap: 20px;
+    }
+}
+
+/* ================================
+   MOBILE RESPONSIVE (≤ 768px)
+   ================================ */
+
+@media (max-width: 768px) {
+    /* Show mobile toggle, hide desktop tabs */
+    .mobile-nav-toggle {
+        display: block;
+        order: 2;
+    }
+
+    .tabs-section:not(.mobile) {
+        display: none;
+    }
+
+    /* Adjust nav content layout */
+    .nav-content {
+        padding: 0 15px;
+        height: 60px;
+    }
+
+    .left-section {
+        gap: 15px;
+        order: 1;
+        flex: 1;
+    }
+
+    .left-section img {
+        height: 36px;
+    }
+
+    /* User menu adjustments */
+    .user-menu {
+        order: 3;
+        gap: 8px;
+    }
+
+    .user-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .user-name {
+        font-size: 13px;
+    }
+
+    .logout-button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    /* Mobile tabs positioning */
+    .tabs-section.mobile {
+        top: 60px;
+    }
+}
+
+/* ================================
+   SMALL MOBILE (≤ 480px)
+   ================================ */
+
+@media (max-width: 480px) {
+    .nav-content {
+        padding: 0 12px;
+        height: 56px;
+    }
+
+    .left-section img {
+        height: 32px;
+    }
+
+    .left-section {
+        gap: 12px;
+    }
+
+    .user-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .user-name {
+        display: none; /* Hide on very small screens */
+    }
+
+    .logout-button {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    .mobile-nav-toggle svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .tabs-section.mobile {
+        top: 56px;
+        padding: 15px 0;
+    }
+
+    .tabs-section.mobile .tab {
+        height: 55px;
+        padding: 0 15px;
+        font-size: 15px;
+    }
+
+    .tabs-section.mobile .nav-link {
+        height: 45px;
+        padding: 0 15px;
+        font-size: 15px;
+    }
+}
+
+/* ================================
+   LANDSCAPE MOBILE OPTIMIZATION
+   ================================ */
+
+@media (max-width: 992px) and (orientation: landscape) and (max-height: 600px) {
+    .nav-content {
+        height: 50px;
+    }
+
+    .left-section img {
+        height: 28px;
+    }
+
+    .user-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .tabs-section.mobile {
+        top: 50px;
+        padding: 10px 0;
+    }
+
+    .tabs-section.mobile .tab {
+        height: 45px;
+        font-size: 14px;
+    }
+}
+
+/* ================================
+   HIGH DPI DISPLAYS (RETINA)
+   ================================ */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .left-section img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+
+    .tab svg,
+    .mobile-nav-toggle svg {
+        shape-rendering: geometricPrecision;
+    }
+}
+
+/* ================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================ */
+
+/* Focus states for keyboard navigation */
+.tab:focus,
+.mobile-nav-toggle:focus,
+.logout-button:focus,
+.nav-link:focus {
+    outline: 2px solid #00BFA5;
+    outline-offset: 2px;
+}
+
+.user-icon:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .portal-header {
+        border-bottom: 2px solid #333;
+    }
+    
+    .tab.active {
+        border-bottom-width: 4px;
+    }
+    
+    .user-icon {
+        border: 2px solid #333;
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .tab,
+    .tab svg,
+    .user-icon,
+    .logout-button,
+    .mobile-nav-toggle,
+    .tabs-section.mobile,
+    .left-section img {
+        transition: none;
+    }
+}
+
+/* ================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ================================ */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets for mobile devices */
+    .tab,
+    .mobile-nav-toggle,
+    .user-icon,
+    .logout-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .tab:hover,
+    .mobile-nav-toggle:hover,
+    .user-icon:hover,
+    .logout-button:hover,
+    .nav-link:hover {
+        background-color: transparent;
+        transform: none;
+    }
+
+    /* Add active/pressed states instead */
+    .tab:active {
+        background-color: rgba(0, 191, 165, 0.1);
+    }
+
+    .mobile-nav-toggle:active {
+        background-color: rgba(0, 191, 165, 0.2);
+    }
+
+    .user-icon:active {
+        transform: scale(0.95);
+    }
+
+    .logout-button:active {
+        background-color: #d0d0d0;
+    }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+    .portal-header {
+        position: static;
+        box-shadow: none;
+        border-bottom: 1px solid #000;
+    }
+
+    .mobile-nav-toggle,
+    .user-menu {
+        display: none;
+    }
+
+    .tabs-section {
+        display: none;
+    }
+}
+
+/* ================================
+   DARK MODE SUPPORT (OPTIONAL)
+   ================================ */
+
+@media (prefers-color-scheme: dark) {
+    .portal-header,
+    .main-nav,
+    .tabs-section.mobile {
+        background-color: #1a1a1a;
+        border-color: #333;
+    }
+
+    .nav-link,
+    .user-name,
+    .mobile-nav-toggle svg {
+        color: #ffffff;
+        stroke: #ffffff;
+    }
+
+    .tab.active {
+        color: #00BFA5;
+    }
+
+    .logout-button {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .logout-button:hover {
+        background-color: #444;
+    }
+}

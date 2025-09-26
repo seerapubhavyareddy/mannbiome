@@ -1,0 +1,158 @@
+/* components/Charts/Gauge.css */
+
+.gauge-container {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    /* Add touch-friendly padding */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.gauge-chart {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 200px;
+    /* Ensure proper scaling on mobile */
+    min-width: 200px;
+    min-height: 120px;
+}
+
+/* Gauge-specific styles */
+.gauge-chart .background-arc {
+    transition: all 0.3s ease;
+}
+
+.gauge-chart .needle {
+    transition: transform 0.3s ease;
+}
+
+.gauge-chart .score-value {
+    transition: all 0.3s ease;
+    /* Ensure text is readable on mobile */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.gauge-chart .tick {
+    transition: all 0.3s ease;
+}
+
+.gauge-chart .tick-label {
+    transition: all 0.3s ease;
+    /* Improve text rendering on mobile */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enhanced responsive adjustments */
+@media (max-width: 768px) {
+    .gauge-container {
+        height: 180px;
+        margin: 15px 0;
+        padding: 8px;
+    }
+    
+    .gauge-chart {
+        min-width: 180px;
+        min-height: 110px;
+    }
+    
+    /* Improve text readability on mobile */
+    .gauge-chart .score-value {
+        font-weight: 700;
+    }
+    
+    .gauge-chart .tick-label {
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 576px) {
+    .gauge-container {
+        height: 150px;
+        margin: 12px 0;
+        padding: 5px;
+    }
+    
+    .gauge-chart {
+        min-width: 160px;
+        min-height: 100px;
+        max-width: 280px;
+    }
+}
+
+/* Very small mobile devices */
+@media (max-width: 480px) {
+    .gauge-container {
+        height: 140px;
+        margin: 10px 0;
+    }
+    
+    .gauge-chart {
+        min-width: 150px;
+        min-height: 90px;
+        max-width: 260px;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 992px) and (orientation: landscape) {
+    .gauge-container {
+        height: 120px;
+        margin: 8px 0;
+    }
+    
+    .gauge-chart {
+        max-height: 120px;
+    }
+}
+
+/* High DPI displays (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .gauge-chart .tick-label,
+    .gauge-chart .score-value {
+        /* Sharper text rendering on high DPI screens */
+        text-rendering: optimizeLegibility;
+    }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+    .gauge-chart .background-arc {
+        filter: brightness(0.8);
+    }
+    
+    .gauge-chart .tick-label {
+        filter: brightness(1.2);
+    }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .gauge-chart .background-arc,
+    .gauge-chart .needle,
+    .gauge-chart .score-value,
+    .gauge-chart .tick,
+    .gauge-chart .tick-label {
+        transition: none;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .gauge-container {
+        /* Slightly larger touch targets */
+        padding: 12px;
+    }
+    
+    .gauge-chart {
+        /* Ensure minimum size for touch interaction */
+        min-width: 200px;
+        min-height: 120px;
+    }
+}

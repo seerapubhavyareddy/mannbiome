@@ -1,0 +1,515 @@
+/* pages/ClinicalTrials/ClinicalTrials.css - Updated with collapsible arrows */
+
+.clinical-trials-container {
+    padding: 20px 0;
+}
+
+/* REMOVED: Back Button styles - no longer needed */
+
+.clinical-trials-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.page-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.clinical-trials-title {
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.last-updated {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    font-size: 14px;
+}
+
+.last-updated svg {
+    width: 16px;
+    height: 16px;
+}
+
+.clinical-trials-subtitle {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 80%;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.loading-state p {
+    margin-top: 15px;
+    color: #666;
+    font-size: 16px;
+}
+
+/* Search and Filters */
+.search-filter-container {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.search-bar {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.search-bar svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px 16px 10px 45px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #00BFA5;
+    box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.1);
+}
+
+.clear-search {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    padding: 4px;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-controls select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filter-controls select:focus {
+    outline: none;
+    border-color: #00BFA5;
+}
+
+/* Results Summary */
+.results-summary {
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Trial Cards - Updated for collapsible design */
+.trials-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.trial-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.trial-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* NEW: Clickable header with arrow */
+.trial-header-clickable {
+    padding: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    background: #fafafa;
+}
+
+.trial-header-clickable:hover {
+    background-color: #f0f0f0;
+}
+
+.trial-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.trial-title-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.trial-title {
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.trial-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.trial-phase,
+.trial-status,
+.trial-duration {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.trial-phase {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.trial-status {
+    color: white;
+}
+
+.trial-duration {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* Trial Participation Info */
+.trial-participation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.participation-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.participants-count {
+    font-size: 16px;
+    font-weight: 700;
+    color: #00BFA5;
+    white-space: nowrap;
+}
+
+.participants-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
+.completion-bar {
+    width: 80px;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.completion-fill {
+    height: 100%;
+    background: #00BFA5;
+    transition: width 0.3s ease;
+}
+
+/* NEW: Collapsible Arrow */
+.trial-arrow {
+    font-size: 16px;
+    color: #00BFA5;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    user-select: none;
+    margin-left: auto;
+}
+
+.trial-arrow.expanded {
+    transform: rotate(180deg);
+}
+
+/* NEW: Expandable Content */
+.trial-expanded-content {
+    padding: 0 20px 20px 20px;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+        padding-top: 0;
+        padding-bottom: 20px;
+    }
+}
+
+/* Trial Content */
+.trial-description {
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 15px 0;
+    font-size: 15px;
+}
+
+.trial-findings {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.trial-findings strong {
+    color: #333;
+}
+
+/* Trial Footer */
+.trial-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.trial-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vendor-info,
+.publication-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    font-size: 13px;
+}
+
+.vendor-info svg,
+.publication-info svg {
+    flex-shrink: 0;
+}
+
+/* Action Buttons */
+.trial-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.learn-more-btn,
+.contact-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.learn-more-btn {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+.learn-more-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.contact-btn {
+    background: #00BFA5;
+    color: white;
+    border: 1px solid #00BFA5;
+}
+
+.contact-btn:hover {
+    background: #00A693;
+    transform: translateY(-1px);
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.no-results button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #00BFA5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.no-results button:hover {
+    background: #00A693;
+}
+
+#clinical-trials.content-section {
+    display: block;
+    margin-bottom: 40px;
+    padding-top: 10px;
+    scroll-margin-top: 70px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .clinical-trials-container {
+        padding: 5px 0;
+    }
+
+    .page-title-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .clinical-trials-title {
+        font-size: 24px;
+    }
+
+    .clinical-trials-subtitle {
+        max-width: 100%;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+    }
+
+    .filter-controls select {
+        width: 100%;
+    }
+
+    .trial-header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .trial-title {
+        font-size: 18px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: initial;
+    }
+
+    .trial-participation {
+        align-self: center;
+    }
+
+    .trial-arrow {
+        align-self: center;
+        margin-left: 0;
+    }
+
+    .trial-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .trial-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .learn-more-btn,
+    .contact-btn {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-filter-container {
+        padding: 15px;
+    }
+
+    .trial-expanded-content {
+        padding: 0 15px 15px 15px;
+    }
+
+    .trial-header-clickable {
+        padding: 15px;
+    }
+
+    .trial-actions {
+        flex-direction: column;
+    }
+
+    .learn-more-btn,
+    .contact-btn {
+        width: 100%;
+    }
+}

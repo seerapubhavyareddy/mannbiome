@@ -1,0 +1,24 @@
+# FastAPI and ASGI server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database dependencies
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+
+# Additional FastAPI dependencies
+python-multipart==0.0.6
+
+# Security and authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Environment management
+python-dotenv==1.0.0
+
+# Date and time handling
+python-dateutil==2.8.2
+# reportlab>=3.6.0
+# For AWS Lambda deployment (optional, we'll add this later)
+# mangum==0.17.0
+reportlab==4.0.4
