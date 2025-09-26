@@ -1,0 +1,448 @@
+/* components/Modal/HealthModal.css - Enhanced styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-container {
+  background: #f5f5f5;
+  border-radius: 16px;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid #e0e0e0;
+  background: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2C3E50;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #f0f0f0;
+  color: #2C3E50;
+}
+
+.modal-content {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0;
+}
+
+/* Detailed Domain Content Styles */
+.detailed-domain-content {
+  padding: 32px;
+  color: #2C3E50;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  text-decoration: none;
+  margin-bottom: 24px;
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background: #f0f0f0;
+  color: #2C3E50;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  color: #2C3E50;
+  margin-bottom: 32px;
+  font-weight: 700;
+}
+
+/* Loading and Error States */
+.modal-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f0f0f0;
+  border-top: 3px solid #00BFA5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.modal-error {
+  text-align: center;
+  padding: 40px;
+  color: #dc3545;
+}
+
+.modal-error button {
+  background: #00BFA5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.2s ease;
+}
+
+.modal-error button:hover {
+  background: #00A693;
+}
+
+/* Placeholder Components */
+.pathway-placeholder,
+.recommendations-placeholder {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.pathway-placeholder h2,
+.recommendations-placeholder h2 {
+  font-size: 24px;
+  color: #2C3E50;
+  margin-bottom: 16px;
+}
+
+.pathway-placeholder p,
+.recommendations-placeholder p {
+  color: #666;
+  margin-bottom: 16px;
+}
+
+/* Modal sections styling */
+.modal-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Recommendation Cards Styling */
+.recommendation-category {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.category-header {
+  margin-bottom: 20px;
+}
+
+.category-title {
+  font-size: 24px;
+  color: #2C3E50;
+  margin: 0;
+  font-weight: 600;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+/* Probiotic Card Specific Styling */
+.probiotic-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.probiotic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.probiotic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.probiotic-title {
+  color: #2C3E50;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.priority-badge {
+  background: #FF6B6B;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.probiotic-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.probiotic-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  color: #666;
+  font-size: 14px;
+}
+
+.key-strains-section {
+  margin-top: 16px;
+}
+
+.key-strains-title {
+  color: #00BFA5;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+  font-weight: 600;
+}
+
+.key-strains-list {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.key-strains-list li {
+  margin-bottom: 4px;
+}
+
+/* Domain-specific category styling */
+.domain-specific-category .category-title {
+  background: linear-gradient(135deg, #00BFA5, #4CAF50);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.domain-specific-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.domain-specific-section h4 {
+  color: #00BFA5;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Doctor's Remarks Section */
+.doctor-remarks-section .section-title {
+  font-size: 24px;
+  color: #2C3E50;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.doctor-remarks-content {
+  border: 1px solid #f5f5f5;
+  min-height: 80px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 8px;
+  color: #999;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doctor-remarks-content:empty::before {
+  content: "No remarks from your doctor at this time.";
+}
+
+/* Disclaimer Section */
+.disclaimer-section {
+  background: #f8f9fa !important;
+  border: 1px solid #e9ecef;
+}
+
+.disclaimer-title {
+  color: #2C3E50;
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.disclaimer-text {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-backdrop {
+    padding: 10px;
+  }
+  
+  .modal-container {
+    max-height: 95vh;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+  
+  .modal-title {
+    font-size: 20px;
+  }
+  
+  .detailed-domain-content {
+    padding: 20px;
+  }
+  
+  .page-title {
+    font-size: 24px;
+  }
+  
+  .modal-content-wrapper {
+    padding: 20px;
+  }
+
+  .recommendation-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .probiotic-details {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .domain-specific-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-container {
+    margin: 10px;
+    max-height: calc(100vh - 20px);
+  }
+  
+  .detailed-domain-content {
+    padding: 16px;
+  }
+  
+  .page-title {
+    font-size: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .recommendation-category {
+    padding: 16px;
+  }
+  
+  .probiotic-card {
+    padding: 16px;
+  }
+  
+  .probiotic-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

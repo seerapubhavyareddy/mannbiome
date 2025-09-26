@@ -1,0 +1,73 @@
+/* components/Modal/HealthMetrics.css */
+.health-metrics-container {
+  margin-bottom: 32px;
+}
+
+.health-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.health-metric-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.health-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.metric-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 20px;
+  color: black;
+  margin-bottom: 8px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.metric-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.health-metrics-loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .health-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .health-metric-card {
+    padding: 20px;
+  }
+  
+  .metric-value {
+    font-size: 36px;
+  }
+  
+  .metric-label {
+    font-size: 16px;
+  }
+}

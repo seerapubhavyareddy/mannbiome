@@ -1,0 +1,948 @@
+/* SpeciesCarousel.css - Enhanced Mobile Compatibility */
+
+/* ================================
+   EXISTING STYLES (Keep all your current styles)
+   ================================ */
+
+/* Main carousel container */
+.species-carousel {
+  position: relative;
+  overflow: hidden;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.species-carousel-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Carousel structure */
+.carousel {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  padding: 0 15px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* Species card styling */
+.species-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.species-title {
+  font-size: 20px;
+  color: #00BFA5;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.status-badge {
+  font-size: 16px;
+  font-weight: 600;
+  color: #00BFA5;
+  white-space: nowrap;
+}
+
+/* Species grid layout - Enhanced for mobile */
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Individual species item - Enhanced for mobile */
+.species-item {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 140px;
+}
+
+.species-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 191, 165, 0.15);
+  border-color: #00BFA5;
+}
+
+/* Species header - Enhanced for mobile */
+.species-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.species-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2C3E50;
+  flex: 1;
+  line-height: 1.3;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.species-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(0, 191, 165, 0.1);
+  color: #00BFA5;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Species metrics - Enhanced for mobile */
+.species-metrics {
+  margin-bottom: 12px;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.metric-label {
+  color: #666;
+  font-weight: 500;
+  flex-shrink: 0;
+  min-width: 50%;
+}
+
+.metric-value {
+  color: #333;
+  font-weight: 600;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+  flex: 1;
+  word-break: break-all;
+}
+
+/* Progress bar styling - Enhanced for mobile */
+.species-progress {
+  margin-top: 12px;
+}
+
+.progress-bar {
+  position: relative;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00BFA5, #4CAF50);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  position: relative;
+  min-width: 2px;
+}
+
+.progress-marker {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #FF5722;
+  border: 2px solid white;
+  border-radius: 50%;
+  top: -2px;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #999;
+  margin-top: 4px;
+}
+
+/* Carousel dots - Enhanced for mobile */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 0 0;
+  padding: 10px 0;
+  flex-wrap: wrap;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  touch-action: manipulation;
+  min-width: 12px;
+  min-height: 12px;
+}
+
+.dot:hover {
+  background: #009688;
+  transform: scale(1.1);
+}
+
+.dot.active {
+  background: #00BFA5;
+  border-color: #00BFA5;
+  box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.2);
+}
+
+/* Confidence Tooltip - Mobile Enhanced */
+.confidence-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.confidence-trigger {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: help;
+  touch-action: manipulation;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+/* Recommendations Section - Enhanced for Mobile */
+.recommendations-section {
+  margin-top: 40px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.recommendations-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2C3E50;
+  margin-bottom: 32px;
+  text-align: center;
+  border-bottom: 2px solid #00BFA5;
+  padding-bottom: 12px;
+  word-wrap: break-word;
+}
+
+/* Recommendation Category */
+.recommendation-category {
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.category-header {
+  margin-bottom: 20px;
+}
+
+.category-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #00BFA5;
+  margin: 0;
+  padding: 8px 16px;
+  background: rgba(0, 191, 165, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid #00BFA5;
+  word-wrap: break-word;
+}
+
+/* Recommendation Grid - Enhanced for Mobile */
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Recommendation Cards - Enhanced for Mobile */
+.recommendation-item-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.recommendation-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.recommendation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.recommendation-title {
+  color: #2C3E50;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  flex: 1;
+  line-height: 1.3;
+  word-wrap: break-word;
+}
+
+.recommendation-checkmark {
+  color: #00BFA5;
+  font-size: 18px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.recommendation-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  word-wrap: break-word;
+}
+
+.recommendation-details {
+  margin-bottom: 16px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  font-size: 13px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #333;
+  flex-shrink: 0;
+  min-width: 60px;
+}
+
+.detail-value {
+  color: #666;
+  text-align: right;
+  flex: 1;
+  word-wrap: break-word;
+}
+
+/* Domain Specific Sections - Enhanced for Mobile */
+.domain-specific-category .category-title {
+  background: linear-gradient(135deg, #00BFA5, #4CAF50);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.domain-specific-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.domain-specific-section h4 {
+  color: #00BFA5;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  word-wrap: break-word;
+}
+
+/* ================================
+   MOBILE RESPONSIVE ENHANCEMENTS
+   ================================ */
+
+/* Large Mobile and Small Tablets (768px - 992px) */
+@media (max-width: 992px) and (min-width: 769px) {
+  .species-carousel {
+    padding: 20px;
+  }
+
+  .species-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+
+  .recommendation-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+
+  .domain-specific-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px;
+  }
+}
+
+/* Standard Mobile (768px and below) */
+@media (max-width: 768px) {
+  .species-carousel {
+    padding: 16px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+  }
+
+  .species-card {
+    padding: 16px;
+    min-height: auto;
+  }
+
+  .species-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .carousel-slide {
+    padding: 0 8px;
+  }
+
+  .species-title {
+    font-size: 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .status-badge {
+    font-size: 14px;
+  }
+
+  .species-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .species-name {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .species-status {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .metric-row {
+    font-size: 11px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .metric-label {
+    min-width: auto;
+  }
+
+  .metric-value {
+    text-align: left;
+    font-size: 11px;
+  }
+
+  .progress-bar {
+    height: 6px;
+  }
+
+  .progress-marker {
+    width: 10px;
+    height: 10px;
+  }
+
+  .progress-labels {
+    font-size: 9px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    min-height: 14px;
+  }
+
+  /* Recommendations Mobile */
+  .recommendations-section {
+    padding: 16px;
+    margin-top: 24px;
+  }
+
+  .recommendations-title {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+
+  .category-title {
+    font-size: 18px;
+    padding: 8px 12px;
+  }
+
+  .recommendation-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .recommendation-item-card {
+    padding: 16px;
+  }
+
+  .recommendation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .recommendation-title {
+    font-size: 15px;
+  }
+
+  .recommendation-checkmark {
+    font-size: 16px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .detail-value {
+    text-align: left;
+  }
+
+  .domain-specific-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+  .species-carousel {
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+
+  .species-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .carousel-slide {
+    padding: 0 4px;
+  }
+
+  .species-item {
+    padding: 12px;
+    min-height: 120px;
+  }
+
+  .species-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .status-badge {
+    font-size: 12px;
+  }
+
+  .species-name {
+    font-size: 12px;
+  }
+
+  .species-status {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  .metric-row {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .metric-value {
+    font-size: 10px;
+  }
+
+  .progress-bar {
+    height: 5px;
+    margin-bottom: 4px;
+  }
+
+  .progress-marker {
+    width: 8px;
+    height: 8px;
+    border-width: 1px;
+  }
+
+  .progress-labels {
+    font-size: 8px;
+  }
+
+  .carousel-dots {
+    gap: 6px;
+    margin: 12px 0 0 0;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+    min-height: 10px;
+  }
+
+  /* Recommendations Small Mobile */
+  .recommendations-section {
+    padding: 12px;
+    margin-top: 20px;
+  }
+
+  .recommendations-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .category-title {
+    font-size: 16px;
+    padding: 6px 10px;
+  }
+
+  .recommendation-item-card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .recommendation-title {
+    font-size: 14px;
+  }
+
+  .recommendation-description {
+    font-size: 13px;
+  }
+
+  .detail-row {
+    font-size: 12px;
+  }
+
+  .key-strains,
+  .benefits {
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  .key-strains ul,
+  .benefits ul {
+    font-size: 11px;
+  }
+}
+
+/* Very Small Mobile (360px and below) */
+@media (max-width: 360px) {
+  .species-carousel {
+    padding: 8px;
+  }
+
+  .species-card {
+    padding: 8px;
+  }
+
+  .species-item {
+    padding: 8px;
+    min-height: 100px;
+  }
+
+  .species-title {
+    font-size: 14px;
+  }
+
+  .species-name {
+    font-size: 11px;
+  }
+
+  .metric-row {
+    font-size: 9px;
+  }
+
+  .recommendations-section {
+    padding: 8px;
+  }
+
+  .recommendation-item-card {
+    padding: 8px;
+  }
+}
+
+/* ================================
+   LANDSCAPE MOBILE OPTIMIZATIONS
+   ================================ */
+
+@media (max-width: 992px) and (orientation: landscape) and (max-height: 600px) {
+  .species-carousel {
+    padding: 12px;
+  }
+
+  .species-card {
+    padding: 12px;
+    min-height: auto;
+  }
+
+  .species-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .carousel-dots {
+    margin: 12px 0 0 0;
+  }
+
+  .recommendations-section {
+    margin-top: 20px;
+    padding: 16px;
+  }
+
+  .recommendations-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+}
+
+/* ================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ================================ */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets for mobile devices */
+  .dot {
+    min-width: 16px;
+    min-height: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .species-item {
+    min-height: 140px;
+  }
+
+  .recommendation-item-card {
+    padding: 20px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .species-item:hover,
+  .recommendation-item-card:hover,
+  .dot:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Add touch-specific active states */
+  .species-item:active {
+    transform: scale(0.98);
+  }
+
+  .recommendation-item-card:active {
+    transform: scale(0.98);
+  }
+
+  .dot:active {
+    transform: scale(1.2);
+  }
+}
+
+/* ================================
+   HIGH DPI DISPLAY SUPPORT
+   ================================ */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .progress-marker {
+    border-width: 1px;
+  }
+
+  .species-status,
+  .metric-value,
+  .progress-labels {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================ */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .species-item {
+    border-width: 2px;
+  }
+
+  .progress-bar {
+    border: 1px solid #333;
+  }
+
+  .dot {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track,
+  .species-item,
+  .recommendation-item-card,
+  .dot,
+  .progress-fill,
+  .progress-marker {
+    transition: none;
+    animation: none;
+  }
+
+  .species-item:hover .progress-fill {
+    animation: none;
+    background: #00BFA5;
+  }
+}
+
+/* Focus states for keyboard navigation */
+.species-item:focus,
+.recommendation-item-card:focus,
+.dot:focus {
+  outline: 2px solid #00BFA5;
+  outline-offset: 2px;
+}
+
+/* ================================
+   LOADING AND ERROR STATES
+   ================================ */
+
+.loading,
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .loading,
+  .no-data {
+    padding: 30px 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading,
+  .no-data {
+    padding: 20px 10px;
+    font-size: 13px;
+  }
+}
+
+/* Loading animation optimization for mobile */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading::before {
+  content: "🔄";
+  display: block;
+  font-size: 32px;
+  margin-bottom: 16px;
+  animation: spin 2s linear infinite;
+}
+
+@media (max-width: 480px) {
+  .loading::before {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .carousel-dots {
+    display: none;
+  }
+
+  .species-carousel {
+    box-shadow: none;
+    border: 1px solid #333;
+  }
+
+  .species-item,
+  .recommendation-item-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #333;
+  }
+}

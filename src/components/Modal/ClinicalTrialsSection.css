@@ -1,0 +1,329 @@
+/* components/Modal/ClinicalTrialsSection.css */
+.clinical-trials-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.section-description {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.trials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Trial Cards */
+.trial-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fafafa;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.trial-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Header Row - Single Line Layout */
+.trial-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background: #fafafa;
+}
+
+.trial-header:hover {
+  background-color: #f0f0f0;
+}
+
+.trial-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Trial Name - Takes most space */
+.trial-name {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2C3E50;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Status and Participants - Middle section */
+.trial-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.trial-status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-open {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-closed {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.status-enrolling {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-unknown {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.trial-participants {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.completion-percentage {
+  color: #888;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Arrow - Right side */
+.trial-arrow {
+  font-size: 16px;
+  color: #00BFA5;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  user-select: none;
+  margin-left: auto;
+}
+
+.trial-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+/* Expanded Details */
+.trial-details {
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+.trial-description p {
+  color: #555;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.trial-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.trial-info-item {
+  color: #555;
+  font-size: 14px;
+}
+
+.trial-info-item strong {
+  color: #2C3E50;
+}
+
+.eligibility-info {
+  grid-column: 1 / -1;
+  background: #e8f5e9;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #4caf50;
+}
+
+.trial-findings {
+  margin: 16px 0;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #00BFA5;
+}
+
+.trial-findings strong {
+  color: #2C3E50;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.trial-findings p {
+  margin: 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Action Buttons */
+.trial-actions {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.enroll-button {
+  padding: 8px 16px;
+  border: 1px solid #00BFA5;
+  border-radius: 6px;
+  background: white;
+  color: #00BFA5;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.enroll-button:hover {
+  background: #f0f9ff;
+  transform: translateY(-1px);
+}
+
+.enroll-button.primary {
+  background: #00BFA5;
+  color: white;
+}
+
+.enroll-button.primary:hover {
+  background: #00A693;
+}
+
+.trial-publication {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.trial-publication small {
+  color: #888;
+  font-style: italic;
+}
+
+/* Disclaimer */
+.trials-disclaimer {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid #ff9800;
+}
+
+.trials-disclaimer p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .clinical-trials-section {
+    padding: 20px;
+  }
+  
+  .trial-header {
+    padding: 12px 16px;
+  }
+  
+  .trial-header-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .trial-name {
+    font-size: 16px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: initial;
+    order: 1;
+  }
+  
+  .trial-meta {
+    order: 2;
+    justify-content: space-between;
+  }
+  
+  .trial-arrow {
+    order: 3;
+    align-self: center;
+  }
+  
+  .trial-details {
+    padding: 16px;
+  }
+  
+  .trial-info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .trial-actions {
+    flex-direction: column;
+  }
+  
+  .enroll-button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .clinical-trials-section {
+    padding: 16px;
+  }
+  
+  .trial-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
