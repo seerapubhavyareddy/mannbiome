@@ -1,6 +1,7 @@
 // services/api.js - Updated with Clinical Trials method
 // const API_BASE_URL = 'https://yd3weja3cp.us-east-2.awsapprunner.com';
-const API_BASE_URL = 'https://gnss5bq5km.us-east-2.awsapprunner.com';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+;
 
 // const API_BASE_URL = 'http://localhost:8001';
 class ApiService {
@@ -21,11 +22,11 @@ class ApiService {
     try {
       console.log(`🔍 API Request: ${config.method || 'GET'} ${url}`);
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log(`✅ API Response:`, data);
       return data;
@@ -56,7 +57,7 @@ class ApiService {
 
   // Health domain details
   async getHealthDomainDetails(domainId, customerId = null) {
-    const endpoint = customerId 
+    const endpoint = customerId
       ? `/api/health-domains/${domainId}/details?customer_id=${customerId}`
       : `/api/health-domains/${domainId}/details`;
     return this.request(endpoint);
@@ -65,15 +66,15 @@ class ApiService {
   // Clinical trials methods
   async getClinicalTrials(filters = {}) {
     const params = new URLSearchParams();
-    
+
     if (filters.search) params.append('search', filters.search);
     if (filters.category && filters.category !== 'all') params.append('category', filters.category);
     if (filters.status && filters.status !== 'all') params.append('status', filters.status);
     if (filters.phase && filters.phase !== 'all') params.append('phase', filters.phase);
-    
+
     const queryString = params.toString();
     const endpoint = `/api/clinical-trials${queryString ? `?${queryString}` : ''}`;
-    
+
     return this.request(endpoint);
   }
 
@@ -127,17 +128,17 @@ class ApiService {
 
   // Add this method to your existing apiService class in services/api.js
 
-/**
- * Get clinical trials for a specific health domain
- * @param {string} domainId - Domain ID (gut, liver, heart, skin, cognitive, aging)
- * @param {number} customerId - Customer ID for eligibility checking
- * @param {number} limit - Maximum number of trials to return (default: 5)
- * @returns {Promise} - Clinical trials data with eligibility
- */
-async getDomainClinicalTrials(domainId, customerId, limit = 5) {
-  const endpoint = `/api/health-domains/${domainId}/clinical-trials?customer_id=${customerId}&limit=${limit}`;
-  return this.request(endpoint);
-}
+  /**
+   * Get clinical trials for a specific health domain
+   * @param {string} domainId - Domain ID (gut, liver, heart, skin, cognitive, aging)
+   * @param {number} customerId - Customer ID for eligibility checking
+   * @param {number} limit - Maximum number of trials to return (default: 5)
+   * @returns {Promise} - Clinical trials data with eligibility
+   */
+  async getDomainClinicalTrials(domainId, customerId, limit = 5) {
+    const endpoint = `/api/health-domains/${domainId}/clinical-trials?customer_id=${customerId}&limit=${limit}`;
+    return this.request(endpoint);
+  }
 
   // Test connection
   async testConnection() {

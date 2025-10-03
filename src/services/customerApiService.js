@@ -36,7 +36,7 @@ class CustomerApiService {
     try {
       const url = `${this.baseURL}${endpoint}`;
       console.log(`📡 API Request: ${url}`);
-      
+
       const response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
@@ -62,10 +62,10 @@ class CustomerApiService {
   // Get customer profile/info
   async getUserProfile(customerId) {
     console.log(`👤 Getting user profile for customer ${customerId}`);
-    
+
     // Try real API - no fallback
     const result = await this.request(`/api/customer/${customerId}/info`);
-    
+
     if (result.success) {
       // Transform backend response to expected frontend format
       const customerInfo = result.data.customer_info;
@@ -88,7 +88,7 @@ class CustomerApiService {
         source: 'REAL_API'
       };
     }
-    
+
     // Don't fall back - throw error instead
     throw new Error(`Failed to get user profile from API: ${result.error}`);
   }
@@ -96,15 +96,15 @@ class CustomerApiService {
   // Get customer microbiome data (overall)
   async getCustomerMicrobiomeData(customerId) {
     console.log(`🎯 Getting microbiome data for customer ${customerId}`);
-    
+
     // Try real API - no fallback
     const result = await this.request(`/api/customer/${customerId}/microbiome-data`);
-    
+
     if (result.success) {
       console.log('✅ Real microbiome data received');
       return result;
     }
-    
+
     // Don't fall back - throw error instead
     throw new Error(`Failed to get microbiome data from API: ${result.error}`);
   }
@@ -112,7 +112,7 @@ class CustomerApiService {
   // Get domain-specific bacteria data
   async getCustomerDomainBacteria(customerId, domain) {
     console.log(`🎯 Getting ${domain} bacteria for customer ${customerId}`);
-    
+
     // Map domain names to domain IDs for backend API
     const domainIdMap = {
       'gut': 1,
@@ -122,22 +122,22 @@ class CustomerApiService {
       'cognitive': 5,
       'aging': 6
     };
-    
+
     const domainId = domainIdMap[domain.toLowerCase()];
-    
+
     if (!domainId) {
       console.error(`❌ Invalid domain: ${domain}`);
       throw new Error(`Invalid domain: ${domain}`);
     }
-    
+
     // Try real API - no fallback
     const result = await this.request(`/api/health-domains/${domainId}/modal-data/${customerId}`);
-    
+
     if (result.success) {
       console.log(`✅ Real ${domain} data received`);
       return result;
     }
-    
+
     // Don't fall back - throw error instead
     throw new Error(`Failed to get ${domain} data from API: ${result.error}`);
   }
@@ -145,21 +145,21 @@ class CustomerApiService {
   // Load complete dashboard data
   async loadDashboardData(customerId) {
     console.log(`📄 Loading dashboard data for customer ${customerId}...`);
-    
+
     try {
       // Try real API first
       const result = await this.request(`/api/customer/${customerId}/dashboard-data`);
-      
+
       if (result.success) {
         console.log('✅ Real dashboard data loaded');
         console.log('🔍 Raw backend data structure:', result.data);
-        
+
         // Transform backend response to expected frontend format
         const backendData = result.data;
-        
+
         // The data is nested under dashboard_data
         const dashboardData = backendData.dashboard_data;
-        
+
         // Extract user data
         const userData = {
           name: dashboardData.user.full_name,
@@ -167,16 +167,16 @@ class CustomerApiService {
           reportId: dashboardData.user.report_id,
           lastUpdated: dashboardData.user.last_updated
         };
-        
+
         // Extract health data
         const healthData = {
           diversityScore: dashboardData.health_data.diversity_score,
           overallScore: dashboardData.health_data.overall_score,
           domains: dashboardData.health_data.domains
         };
-        
+
         console.log('✅ Transformed data:', { userData, healthData });
-        
+
         return {
           success: true,
           data: {
@@ -186,33 +186,33 @@ class CustomerApiService {
           source: 'REAL_API'
         };
       }
-      
+
     } catch (error) {
       console.error('❌ Dashboard API error:', error);
       console.log('❌ Stopping fallback - will only use real API or fail');
       throw error; // Don't fall back to mock - fail if API doesn't work
     }
-    
+
     // Remove fallback - force API only
     throw new Error('Dashboard API failed - no fallback allowed');
-    
+
     try {
       // Get user profile from mock
       const profileResult = await this.getUserProfile(customerId);
-      
+
       if (!profileResult.success) {
         throw new Error('Failed to load user profile');
       }
 
       const userInfo = profileResult.user;
-      
+
       // Get domain scores from mock data
       const domainScores = {};
       const domains = ['liver', 'aging', 'skin', 'cognitive', 'gut', 'heart'];
-      
+
       for (const domain of domains) {
         const domainResult = await this.getCustomerDomainBacteria(customerId, domain);
-        
+
         if (domainResult.success && domainResult.data) {
           const domainInfo = domainResult.data.domain_info;
           domainScores[domain] = {
@@ -229,12 +229,12 @@ class CustomerApiService {
           };
         }
       }
-      
+
       // Calculate overall scores
       const scores = Object.values(domainScores);
       const avgScore = scores.reduce((sum, s) => sum + s.score, 0) / scores.length;
       const avgDiversity = scores.reduce((sum, s) => sum + s.diversity, 0) / scores.length;
-      
+
       return {
         success: true,
         data: {
@@ -252,7 +252,7 @@ class CustomerApiService {
         },
         source: 'MOCK_FALLBACK'
       };
-      
+
     } catch (error) {
       console.error('❌ Error loading dashboard data:', error);
       throw error;
@@ -262,27 +262,27 @@ class CustomerApiService {
   // Get bacteria domains data (for backend compatibility)
   async getCustomerBacteriaDomains(customerId) {
     console.log(`🧬 Getting bacteria domains for customer ${customerId}`);
-    
+
     // Try real API first
     const result = await this.request(`/api/customer/${customerId}/bacteria-domains`);
-    
+
     if (result.success) {
       console.log('✅ Real bacteria domains data received');
       return result;
     }
-    
+
     // Fallback - build from individual domain calls
     console.log('📱 Building domains from mock data');
     const domains = ['liver', 'aging', 'skin', 'cognitive', 'gut', 'heart'];
     const domainBacteria = {};
-    
+
     for (const domain of domains) {
       const domainResult = await this.getCustomerDomainBacteria(customerId, domain);
       if (domainResult.success) {
         domainBacteria[domain] = domainResult.data;
       }
     }
-    
+
     return {
       success: true,
       data: {
@@ -296,16 +296,16 @@ class CustomerApiService {
   // Switch customer for testing
   async switchCustomer(newCustomerId) {
     console.log(`🔄 Switching to customer ${newCustomerId}`);
-    
+
     this.setCustomerId(newCustomerId);
-    
+
     // Get customer information
     const customerResult = await this.getUserProfile(newCustomerId);
-    
+
     if (customerResult.success) {
       const customerInfo = customerResult.user;
       console.log(`✅ Switched to: ${customerInfo.full_name} (${newCustomerId})`);
-      
+
       return {
         success: true,
         message: `Switched to ${customerInfo.full_name}`,
@@ -313,7 +313,7 @@ class CustomerApiService {
         source: customerResult.source
       };
     }
-    
+
     return {
       success: false,
       error: 'Failed to switch customer',
@@ -325,13 +325,13 @@ class CustomerApiService {
   async testAllCustomers() {
     const customers = [3091, 8420, 5500]; // Known test customers
     const results = {};
-    
+
     for (const customerId of customers) {
       try {
         const profileResult = await this.getUserProfile(customerId);
         const overallData = await this.getCustomerMicrobiomeData(customerId);
         const agingData = await this.getCustomerDomainBacteria(customerId, 'aging');
-        
+
         results[customerId] = {
           name: profileResult.user?.full_name || `Customer ${customerId}`,
           profile_source: profileResult.source,
@@ -349,7 +349,7 @@ class CustomerApiService {
         };
       }
     }
-    
+
     return {
       success: true,
       message: "All customers tested - showing data sources",

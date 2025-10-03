@@ -15,7 +15,11 @@ from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import BaseDocTemplate, PageTemplate, NextPageTemplate, FrameBreak
+from reportlab.platypus import Frame, PageTemplate, KeepInFrame, PageBreak
 from reportlab.lib.units import inch
+from datetime import datetime
+from reportlab.lib.utils import ImageReader
 import io
 import tempfile
 
@@ -1084,290 +1088,565 @@ def get_complete_customer_profile(customer_id: int, db: Session = Depends(get_db
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating complete profile: {e}")
+
+def add_header_footer(canvas_obj, doc):
+    """Add professional header and footer to every page"""
+    canvas_obj.saveState()
+    
+    width, height = A4
+    
+    # ==================== HEADER ====================
+    # Thin professional border line
+    canvas_obj.setStrokeColor(colors.HexColor('#E0E0E0'))
+    canvas_obj.setLineWidth(0.5)
+    canvas_obj.line(40, height - 80, width - 40, height - 80)
+    
+    # LEFT: Logo (replace the circle code with this)
+    logo_x = 50
+    logo_y = height - 35
+    logo_width = 120   # Width for horizontal logo
+    logo_height = 50  # Height for horizontal logo
+
+    try:
+        # Path relative to where you run the Python script
+        logo_path = "public/MannBiomeLogo.png"
+        
+        canvas_obj.drawImage(
+            logo_path, 
+            logo_x - 5,              # X position (adjusted for horizontal logo)
+            logo_y - logo_height/2,  # Y position (centered vertically)
+            width=logo_width, 
+            height=logo_height, 
+            mask='auto',             # Handles transparency
+            preserveAspectRatio=True
+        )
+    except:
+        # Draw circle background for logo
+        canvas_obj.setFillColor(colors.HexColor('#00BFA5'))
+        canvas_obj.setStrokeColor(colors.HexColor('#00BFA5'))
+        canvas_obj.setLineWidth(1)
+        canvas_obj.circle(logo_x, logo_y, logo_radius, fill=1, stroke=1)
+        
+        # Logo initials centered in circle
+        canvas_obj.setFillColor(colors.white)
+        canvas_obj.setFont("Helvetica-Bold", 12)
+        initials_width = canvas_obj.stringWidth("MB", "Helvetica-Bold", 12)
+        canvas_obj.drawString(logo_x - initials_width/2, logo_y - 4, "MB")
+
+    
+    
+    
+    # CENTER: Report Title (perfectly centered)
+    canvas_obj.setFont("Helvetica-Bold", 14)
+    canvas_obj.setFillColor(colors.HexColor('#1A365D'))
+    report_title = getattr(doc, 'report_title', 'Health Analysis Report')
+    title_width = canvas_obj.stringWidth(report_title, "Helvetica-Bold", 14)
+    canvas_obj.drawString((width - title_width) / 2, height - 45, report_title)
+    
+    # RIGHT: Patient Info (properly right-aligned with email)
+    canvas_obj.setFont("Helvetica", 8)
+    canvas_obj.setFillColor(colors.HexColor('#555555'))
+    
+    patient_name = getattr(doc, 'patient_name', 'N/A')
+    report_id = getattr(doc, 'report_id', 'N/A')
+    patient_email = getattr(doc, 'patient_email', 'N/A')
+    report_date = getattr(doc, 'report_date', datetime.now().strftime("%B %d, %Y"))
+    
+    # Calculate right alignment (from right edge)
+    right_margin = 50
+    y_start = height - 30
+    line_height = 10
+    
+    # Draw each line right-aligned
+    lines = [
+        f"Patient: {patient_name}",
+        f"Email: {patient_email}",
+        f"ID: {report_id}",
+        f"Date: {report_date}"
+    ]
+    
+    y_pos = y_start
+    for line in lines:
+        line_width = canvas_obj.stringWidth(line, "Helvetica", 8)
+        canvas_obj.drawString(width - right_margin - line_width, y_pos, line)
+        y_pos -= line_height
+    
+    # ==================== FOOTER ====================
+    # Thin border line
+    canvas_obj.setStrokeColor(colors.HexColor('#E0E0E0'))
+    canvas_obj.setLineWidth(0.5)
+    canvas_obj.line(40, 45, width - 40, 45)
+    
+    # Footer text
+    canvas_obj.setFont("Helvetica", 7)
+    canvas_obj.setFillColor(colors.HexColor('#666666'))
+    
+    # Left: Company info
+    canvas_obj.drawString(40, 30, "MannBiome Inc. | support@mannbiome.com")
+    
+    # Center: Confidential
+    confidential = "CONFIDENTIAL - For Patient Use Only"
+    conf_width = canvas_obj.stringWidth(confidential, "Helvetica", 7)
+    canvas_obj.drawString((width - conf_width) / 2, 30, confidential)
+    
+    # Right: Page number
+    page_text = f"Page {canvas_obj.getPageNumber()}"
+    page_width = canvas_obj.stringWidth(page_text, "Helvetica", 7)
+    canvas_obj.drawString(width - page_width - 40, 30, page_text)
+    
+    canvas_obj.restoreState()
+
+
+
+def create_health_overview_table(domain_scores: dict, styles) -> Table:
+    """
+    Create a professional health overview table with unified column headers
+    Handles both full and filtered domain lists
+    """
+    table_data = []
+    
+    # Main header row with column titles - center-aligned
+    table_data.append([
+        "",  # Empty cell for domain names column
+        Paragraph("<b>Score</b>", styles['Normal']),
+        Paragraph("<b>Diversity</b>", styles['Normal']),
+        Paragraph("<b>Status</b>", styles['Normal'])
+    ])
+    
+    # Section 1: Complete Health Overview (subheader)
+    table_data.append([
+        Paragraph("<b>Complete Health Overview</b>", styles['Normal']),
+        "",
+        "",
+        ""
+    ])
+    
+    # Overall data row
+    overall_data = domain_scores.get("overall", {})
+    table_data.append([
+        "Overall",
+        f"{overall_data.get('score', 'N/A')}/5.0",
+        f"{overall_data.get('diversity', 'N/A')}/5.0",
+        overall_data.get('status', 'Unknown').title()
+    ])
+    
+    # Section 2: Domain-Specific Analysis (subheader)
+    domain_section_row = len(table_data)  # Track where domain section starts
+    table_data.append([
+        Paragraph("<b>Domain-Specific Analysis</b>", styles['Normal']),
+        "",
+        "",
+        ""
+    ])
+    
+    # Domain rows - dynamically add based on what's in domain_scores
+    domain_order = ["gut", "liver", "heart", "skin", "cognitive", "aging"]
+    domain_data_rows = []
+    
+    for domain in domain_order:
+        if domain in domain_scores:
+            domain_data = domain_scores[domain]
+            domain_data_rows.append([
+                domain.title(),
+                f"{domain_data.get('score', 'N/A')}/5.0",
+                f"{domain_data.get('diversity', 'N/A')}/5.0",
+                domain_data.get('status', 'Unknown').title()
+            ])
+    
+    table_data.extend(domain_data_rows)
+    
+    # Create table
+    health_table = Table(table_data, colWidths=[2.5*inch, 1.5*inch, 1.5*inch, 1.5*inch])
+    
+    # Build style list dynamically
+    style_commands = [
+        # Font styling
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        
+        # Main column headers (row 0) - bold and colored
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#1A365D')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#F5F5F5')),
+        
+        # Section subheaders (rows 1 and domain_section_row)
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 1), (-1, 1), 11),
+        ('TEXTCOLOR', (0, 1), (-1, 1), colors.HexColor('#1A365D')),
+        ('SPAN', (0, 1), (-1, 1)),  # Merge "Complete Health Overview"
+        
+        ('FONTNAME', (0, domain_section_row), (-1, domain_section_row), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, domain_section_row), (-1, domain_section_row), 11),
+        ('TEXTCOLOR', (0, domain_section_row), (-1, domain_section_row), colors.HexColor('#1A365D')),
+        ('SPAN', (0, domain_section_row), (-1, domain_section_row)),  # Merge "Domain-Specific Analysis"
+        
+        # Subtle horizontal lines
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.HexColor('#E0E0E0')),  # Below headers
+        ('LINEBELOW', (0, 2), (-1, 2), 0.5, colors.HexColor('#F0F0F0')),  # Below Overall
+        
+        # Padding - reduced for section headers
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 1), (-1, 1), 4),
+        ('BOTTOMPADDING', (0, 1), (-1, 1), 4),
+        ('TOPPADDING', (0, domain_section_row), (-1, domain_section_row), 4),
+        ('BOTTOMPADDING', (0, domain_section_row), (-1, domain_section_row), 4),
+        ('TOPPADDING', (0, 2), (-1, 2), 6),
+        ('BOTTOMPADDING', (0, 2), (-1, 2), 6),
+        
+        # Alignment
+        ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+        ('ALIGN', (1, 0), (-1, 0), 'CENTER'),
+        ('ALIGN', (1, 2), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]
+    
+    # Add domain-specific padding and lines dynamically
+    if len(domain_data_rows) > 0:
+        first_domain_row = domain_section_row + 1
+        last_domain_row = first_domain_row + len(domain_data_rows) - 1
+        
+        style_commands.extend([
+            ('TOPPADDING', (0, first_domain_row), (-1, last_domain_row), 6),
+            ('BOTTOMPADDING', (0, first_domain_row), (-1, last_domain_row), 6),
+            ('LINEBELOW', (0, first_domain_row), (-1, last_domain_row), 0.5, colors.HexColor('#F0F0F0')),
+        ])
+        
+        # Alternating background for domain rows
+        for i, row_idx in enumerate(range(first_domain_row, last_domain_row + 1)):
+            if i % 2 == 0:
+                style_commands.append(
+                    ('BACKGROUND', (0, row_idx), (-1, row_idx), colors.HexColor('#FAFAFA'))
+                )
+    
+    health_table.setStyle(TableStyle(style_commands))
+    
+    return health_table
+
+def create_compact_bacteria_table(bacteria_list, category_name, bg_color, max_rows=15):
+    """Create compact bacteria table with smaller fonts and tighter spacing"""
+    if not bacteria_list:
+        return None
+    
+    bacteria_list = bacteria_list[:max_rows]
+    
+    # Header
+    data = [["Bacteria", "Abund.", "St.", "Ev."]]
+    
+    # Data rows with abbreviations
+    for b in bacteria_list:
+        # Shorten bacteria name
+        full_name = b.get('bacteria_name', 'Unknown')
+        short_name = ' '.join(full_name.split()[:2])
+        
+        # Fix status mapping - handle all cases
+        status_raw = b.get('status', 'unknown').lower()
+        status_map = {
+            'good': 'OK',
+            'high': 'HI', 
+            'normal': 'NR',
+            'low': 'LO',
+            'unknown': 'NK'
+        }
+        status = status_map.get(status_raw, 'NK')
+        
+        data.append([
+            Paragraph(f"<i>{short_name}</i>", 
+                     ParagraphStyle('Compact', fontSize=7, leading=8)),
+            f"{b.get('percentage', 0):.3f}%",
+            status,
+            b.get('evidence_strength', 'C')
+        ])
+    
+    # Tighter column widths
+    table = Table(data, colWidths=[1.5*inch, 0.6*inch, 0.35*inch, 0.3*inch])
+    
+    table.setStyle(TableStyle([
+        # Header
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 7),
+        ('BACKGROUND', (0, 0), (-1, 0), bg_color),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        
+        # Data
+        ('FONTNAME', (0, 1), (0, -1), 'Helvetica'),
+        ('FONTNAME', (1, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 6.5),
+        
+        # Tight padding
+        ('LEFTPADDING', (0, 0), (-1, -1), 3),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        
+        # Alignment
+        ('ALIGN', (1, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        
+        # Minimal borders
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.HexColor('#555555')),
+        ('LINEBELOW', (0, 1), (-1, -1), 0.25, colors.HexColor('#DDDDDD')),
+    ]))
+    
+    return table
+
 @app.post("/api/reports/generate", tags=["Portal"])
-def generate_pdf_report(
-    report_request: dict,
-    customer_id: int = None,
-    db: Session = Depends(get_db)
-):
-    """Generate PDF report for customer"""
+def generate_pdf_report(report_request: dict, customer_id: int = None, db: Session = Depends(get_db)):
+    """Generate PDF report with proper frame management"""
     if db is None:
         raise HTTPException(status_code=503, detail="Database connection not available")
     
     try:
-        # Extract request parameters
+        # Extract parameters
         report_type = report_request.get("type", "full")
-        domains = report_request.get("domains", [])
-        format_type = report_request.get("format", "pdf")
+        requested_domains = report_request.get("domains", [])
         
-        # Use customer_id from request body if not in path
         if not customer_id:
             customer_id = report_request.get("customer_id")
-        
         if not customer_id:
             raise HTTPException(status_code=400, detail="Customer ID required")
         
-        # Get customer data
+        # Get data
         user_profile = get_user_profile(customer_id, db)
-        microbiome_data = get_microbiome_data(customer_id, db)
         dashboard_data = get_customer_dashboard_data(customer_id, db)
         
-        if not all([user_profile.get("success"), microbiome_data.get("success"), dashboard_data.get("success")]):
-            raise HTTPException(status_code=404, detail="Required customer data not found")
+        if not user_profile.get("success"):
+            raise HTTPException(status_code=404, detail="User profile not found")
         
-        # Create PDF in memory
-        buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4)
-        story = []
-        styles = getSampleStyleSheet()
+        # Get bacteria
+        bacteria = []
         
-        # Title
-        title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=24,
-            spaceAfter=30,
-            textColor=colors.HexColor('#1a365d')
-        )
-        
-        report_title = "Full Health Analysis Report" if report_type == "full" else f"Domain Analysis Report - {', '.join(domains).title()}"
-        story.append(Paragraph(report_title, title_style))
-        story.append(Spacer(1, 20))
-        
-        # Patient Info
-        user = user_profile["user"]
-        story.append(Paragraph("Patient Information", styles['Heading2']))
-        patient_data = [
-            ["Name:", user.get("full_name", "N/A")],
-            ["Report ID:", user.get("report_id", "N/A")],
-            ["Email:", user.get("email", "N/A")],
-            ["Report Date:", user.get("created_at", "N/A")]
-        ]
-        
-        patient_table = Table(patient_data, colWidths=[2*inch, 4*inch])
-        patient_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('LEFTPADDING', (0, 0), (-1, -1), 0),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-        story.append(patient_table)
-        story.append(Spacer(1, 20))
-        
-        # Health Scores Overview
-        health_data = dashboard_data["dashboard_data"]["health_data"]
-        story.append(Paragraph("Health Scores Overview", styles['Heading2']))
-        
-        scores_data = [
-            ["Overall Score:", f"{health_data['overall_score']}/5.0"],
-            ["Diversity Score:", f"{health_data['diversity_score']}/5.0"],
-            ["Bacteria Analyzed:", str(health_data['bacteria_analyzed'])],
-            ["Last Updated:", health_data.get('last_updated', 'N/A')]
-        ]
-        
-        scores_table = Table(scores_data, colWidths=[2*inch, 4*inch])
-        scores_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('LEFTPADDING', (0, 0), (-1, -1), 0),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-        story.append(scores_table)
-        story.append(Spacer(1, 20))
-        
-        # Domain Scores
-        if report_type == "full" or domains:
-            story.append(Paragraph("Domain Analysis", styles['Heading2']))
+        if report_type == "domain" and requested_domains:
+            domain_name_to_id = {
+                "gut": 1, "liver": 2, "heart": 3,
+                "skin": 4, "cognitive": 5, "aging": 6
+            }
             
-            domain_scores = health_data.get("domains", {})
-            domains_to_show = domains if domains else list(domain_scores.keys())
+            for domain_name in requested_domains:
+                domain_id = domain_name_to_id.get(domain_name.lower())
+                if domain_id:
+                    domain_bacteria = _species_for_domain(customer_id, domain_id, db)
+                    bacteria.extend(domain_bacteria)
             
-            for domain in domains_to_show:
-                if domain in domain_scores and domain != "overall":
-                    domain_data = domain_scores[domain]
-                    story.append(Paragraph(f"{domain.title()} Health", styles['Heading3']))
-                    
-                    domain_table_data = [
-                        ["Score:", f"{domain_data.get('score', 'N/A')}/5.0"],
-                        ["Diversity:", f"{domain_data.get('diversity', 'N/A')}/5.0"],
-                        ["Status:", domain_data.get('status', 'N/A').title()]
-                    ]
-                    
-                    domain_table = Table(domain_table_data, colWidths=[1.5*inch, 3*inch])
-                    domain_table.setStyle(TableStyle([
-                        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-                        ('FONTSIZE', (0, 0), (-1, -1), 9),
-                        ('LEFTPADDING', (0, 0), (-1, -1), 0),
-                        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
-                        ('TOPPADDING', (0, 0), (-1, -1), 4),
-                        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-                    ]))
-                    story.append(domain_table)
-                    story.append(Spacer(1, 12))
-        
-        # Bacteria Analysis (for both full and domain-specific reports)
-        if report_type == "full":
-            # Show all bacteria for full reports (EXISTING FUNCTIONALITY PRESERVED)
-            bacteria = microbiome_data.get("bacteria", [])
-        else:
-            # Filter bacteria by selected domains for domain-specific reports (NEW FUNCTIONALITY)
-            bacteria = []
-            for domain in domains:
-                try:
-                    # Get domain ID from domain name
-                    domain_id_map = {"gut": 1, "liver": 2, "heart": 3, "skin": 4, "cognitive": 5, "aging": 6}
-                    domain_id = domain_id_map.get(domain.lower())
-                    
-                    if domain_id:
-                        # Get bacteria associated with this domain
-                        domain_bacteria = _species_for_domain(customer_id, domain_id, db)
-                        bacteria.extend(domain_bacteria)
-                except Exception as e:
-                    print(f"Error getting bacteria for domain {domain}: {e}")
-                    continue
-            
-            # Remove duplicates while preserving order
+            # Remove duplicates
             seen = set()
             unique_bacteria = []
             for b in bacteria:
-                bacteria_name = b.get("bacteria_name", "")
-                if bacteria_name not in seen:
-                    seen.add(bacteria_name)
+                identifier = b.get('msp_id') or b.get('bacteria_name')
+                if identifier and identifier not in seen:
+                    seen.add(identifier)
                     unique_bacteria.append(b)
             bacteria = unique_bacteria
-        
-        if bacteria:
-            # Group bacteria by category
-            beneficial_bacteria = [b for b in bacteria if b.get("category") == "beneficial"]
-            pathogenic_bacteria = [b for b in bacteria if b.get("category") == "pathogenic"]
-            neutral_bacteria = [b for b in bacteria if b.get("category") == "neutral"]
             
-            # Sort each category by abundance (highest first)
-            beneficial_bacteria.sort(key=lambda x: x.get("abundance", 0), reverse=True)
-            pathogenic_bacteria.sort(key=lambda x: x.get("abundance", 0), reverse=True)
-            neutral_bacteria.sort(key=lambda x: x.get("abundance", 0), reverse=True)
-            
-            # Add title based on report type
-            if report_type == "full":
-                story.append(Paragraph("Complete Bacterial Analysis", styles['Heading2']))
-            else:
-                domain_names = ", ".join([d.title() for d in domains])
-                story.append(Paragraph(f"Bacterial Analysis for {domain_names}", styles['Heading2']))
-            
-            # Beneficial Bacteria Section
-            if beneficial_bacteria:
-                story.append(Paragraph("Beneficial Bacterial Species", styles['Heading3']))
-                bacteria_data = [["Bacteria Name", "Abundance %", "Status", "Evidence"]]
-                for b in beneficial_bacteria:
-                    bacteria_data.append([
-                        b.get("bacteria_name", "Unknown"),
-                        f"{b.get('percentage', 0):.3f}%",
-                        b.get("status", "Unknown").title(),
-                        b.get("evidence_strength", "C")
-                    ])
-                
-                bacteria_table = Table(bacteria_data, colWidths=[2.5*inch, 1*inch, 1*inch, 0.7*inch])
-                bacteria_table.setStyle(TableStyle([
-                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                    ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-                    ('FONTSIZE', (0, 0), (-1, -1), 8),
-                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgreen),
-                    ('LEFTPADDING', (0, 0), (-1, -1), 6),
-                    ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-                    ('TOPPADDING', (0, 0), (-1, -1), 6),
-                    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                ]))
-                story.append(bacteria_table)
-                story.append(Spacer(1, 20))
-            
-            # Pathogenic/Concerning Bacteria Section
-            if pathogenic_bacteria:
-                story.append(Paragraph("Pathogenic/Concerning Bacterial Species", styles['Heading3']))
-                bacteria_data = [["Bacteria Name", "Abundance %", "Status", "Evidence"]]
-                for b in pathogenic_bacteria:
-                    bacteria_data.append([
-                        b.get("bacteria_name", "Unknown"),
-                        f"{b.get('percentage', 0):.3f}%",
-                        b.get("status", "Unknown").title(),
-                        b.get("evidence_strength", "C")
-                    ])
-                
-                bacteria_table = Table(bacteria_data, colWidths=[2.5*inch, 1*inch, 1*inch, 0.7*inch])
-                bacteria_table.setStyle(TableStyle([
-                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                    ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-                    ('FONTSIZE', (0, 0), (-1, -1), 8),
-                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightcoral),
-                    ('LEFTPADDING', (0, 0), (-1, -1), 6),
-                    ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-                    ('TOPPADDING', (0, 0), (-1, -1), 6),
-                    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                ]))
-                story.append(bacteria_table)
-                story.append(Spacer(1, 20))
-            
-            # Neutral/Other Bacteria Section
-            if neutral_bacteria:
-                story.append(Paragraph("Other Bacterial Species", styles['Heading3']))
-                bacteria_data = [["Bacteria Name", "Abundance %", "Status", "Evidence"]]
-                for b in neutral_bacteria:
-                    bacteria_data.append([
-                        b.get("bacteria_name", "Unknown"),
-                        f"{b.get('percentage', 0):.3f}%",
-                        b.get("status", "Unknown").title(),
-                        b.get("evidence_strength", "C")
-                    ])
-                
-                bacteria_table = Table(bacteria_data, colWidths=[2.5*inch, 1*inch, 1*inch, 0.7*inch])
-                bacteria_table.setStyle(TableStyle([
-                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                    ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-                    ('FONTSIZE', (0, 0), (-1, -1), 8),
-                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                    ('LEFTPADDING', (0, 0), (-1, -1), 6),
-                    ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-                    ('TOPPADDING', (0, 0), (-1, -1), 6),
-                    ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                ]))
-                story.append(bacteria_table)
-                story.append(Spacer(1, 20))
-            
-            # Summary section
-            story.append(Paragraph("Bacteria Analysis Summary", styles['Heading3']))
-            summary_data = [
-                ["Total Bacteria Species:", str(len(bacteria))],
-                ["Beneficial Species:", str(len(beneficial_bacteria))],
-                ["Concerning Species:", str(len(pathogenic_bacteria))],
-                ["Other Species:", str(len(neutral_bacteria))]
-            ]
-            
-            if report_type != "full":
-                summary_data.insert(0, ["Selected Domains:", ", ".join([d.title() for d in domains])])
-            
-            summary_table = Table(summary_data, colWidths=[2*inch, 2*inch])
-            summary_table.setStyle(TableStyle([
-                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
-                ('LEFTPADDING', (0, 0), (-1, -1), 0),
-                ('RIGHTPADDING', (0, 0), (-1, -1), 0),
-                ('TOPPADDING', (0, 0), (-1, -1), 6),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ]))
-            story.append(summary_table)
+            if not bacteria:
+                raise HTTPException(
+                    status_code=404, 
+                    detail=f"No bacteria data found for domains: {', '.join(requested_domains)}"
+                )
         else:
-            # No bacteria found
-            if report_type == "full":
-                story.append(Paragraph("No bacterial data available for analysis.", styles['Normal']))
-            else:
-                domain_names = ", ".join([d.title() for d in domains])
-                story.append(Paragraph(f"No bacterial data found for selected domains: {domain_names}", styles['Normal']))
+            microbiome_data = get_microbiome_data(customer_id, db)
+            if not microbiome_data.get("success"):
+                raise HTTPException(status_code=404, detail="Microbiome data not found")
+            bacteria = microbiome_data.get("bacteria", [])
+        
+        # Setup PDF
+        buffer = io.BytesIO()
+        
+        width, height = A4
+        
+        # PAGE 1 TEMPLATE: Single column for health table
+        single_frame = Frame(
+            40, 55,
+            width - 80,
+            height - 145,
+            id='single_col'
+        )
+        
+        single_page = PageTemplate(
+            id='SingleCol',
+            frames=[single_frame],
+            onPage=add_header_footer
+        )
+        
+        # PAGE 2+ TEMPLATE: Header frame + Two columns for bacteria
+        # Top frame for full-width header content
+        # Top frame for full-width header content
+        header_frame = Frame(
+            40, height - 175,  # Changed from height - 160
+            width - 80,
+            65,  # Changed from 50
+            id='header_frame',
+            showBoundary=0
+        )
+        
+        # Two column frames below the header
+        column_width = (width - 100) / 2
+        left_frame = Frame(
+            40, 55,
+            column_width,
+            height - 235,  # Changed from height - 220
+            id='left_col'
+        )
+        right_frame = Frame(
+            50 + column_width, 55,
+            column_width,
+            height - 235,  # Changed from height - 220
+            id='right_col'
+        )
+        
+        bacteria_page = PageTemplate(
+            id='BacteriaPage',
+            frames=[header_frame, left_frame, right_frame],
+            onPage=add_header_footer
+        )
+        
+        doc = BaseDocTemplate(
+            buffer,
+            pagesize=A4,
+            topMargin=90,
+            bottomMargin=55,
+            leftMargin=40,
+            rightMargin=40
+        )
+        
+        doc.addPageTemplates([single_page, bacteria_page])
+        
+        # Metadata
+        user = user_profile["user"]
+        if report_type == "domain" and requested_domains:
+            domain_titles = ", ".join([d.title() for d in requested_domains])
+            doc.report_title = f"Domain Analysis: {domain_titles}"
+        else:
+            doc.report_title = "Full Health Analysis Report"
+            
+        doc.patient_name = user.get("full_name", "N/A")
+        doc.report_id = user.get("report_id", "N/A")
+        doc.patient_email = user.get("email", "N/A")
+        doc.report_date = datetime.now().strftime("%B %d, %Y")
+        
+        # Build story
+        story = []
+        styles = getSampleStyleSheet()
+        
+        # Get domain scores
+        health_data = dashboard_data["dashboard_data"]["health_data"]
+        domain_scores = health_data.get("domains", {})
+        
+        # Filter if needed
+        if report_type == "domain" and requested_domains:
+            filtered_scores = {"overall": domain_scores.get("overall", {})}
+            for domain in requested_domains:
+                if domain in domain_scores:
+                    filtered_scores[domain] = domain_scores[domain]
+            domain_scores = filtered_scores
+        
+        # PAGE 1: Health table (single column, full width)
+        health_table = create_health_overview_table(domain_scores, styles)
+        story.append(health_table)
+        
+        # Switch to bacteria page layout
+        story.append(NextPageTemplate('BacteriaPage'))
+        story.append(PageBreak())
+        
+        # Categorize bacteria
+        beneficial = [b for b in bacteria if b.get("category") == "beneficial"]
+        pathogenic = [b for b in bacteria if b.get("category") == "pathogenic"]
+        neutral = [b for b in bacteria if b.get("category") == "neutral"]
+        
+        # HEADER FRAME (full width): Title, summary, legend
+        story.append(Paragraph(
+            "<b>Bacteria Analysis</b>",
+            ParagraphStyle('PageTitle', fontSize=14, textColor=colors.HexColor('#1A365D'),
+                          spaceAfter=4, fontName='Helvetica-Bold', alignment=1)
+        ))
+        
+        # Summary stats in one line
+        summary_text = (
+            f"Total Bacteria Species: <b>{len(bacteria)}</b> | "
+            f"Beneficial Species: <b>{len(beneficial)}</b> | "
+            f"Concerning Species: <b>{len(pathogenic)}</b> | "
+            f"Other Species: <b>{len(neutral)}</b>"
+        )
+        story.append(Paragraph(
+            summary_text,
+            ParagraphStyle('SummaryLine', fontSize=8, textColor=colors.HexColor('#666666'),
+                          spaceAfter=3, alignment=1)
+        ))
+        
+        # Legend for abbreviations
+        legend_text = (
+            "<i>Abund. = Abundance (relative %), "
+            "St. = Status (OK/HI/LO/NR), "
+            "Ev. = Evidence Strength (A/B/C)</i>"
+        )
+        story.append(Paragraph(
+            legend_text,
+            ParagraphStyle('Legend', fontSize=7, textColor=colors.HexColor('#888888'),
+                          spaceAfter=0, alignment=1)
+        ))
+        
+        # Move to LEFT COLUMN
+        story.append(FrameBreak())
+        
+        # LEFT COLUMN: Beneficial bacteria
+        story.append(Paragraph(
+            f"<b>Beneficial Species</b> <font size=8 color='#666666'>({len(beneficial)} detected)</font>",
+            ParagraphStyle('ColumnHeading', fontSize=10, textColor=colors.HexColor('#10B981'),
+                          spaceAfter=6, fontName='Helvetica-Bold')
+        ))
+        
+        if beneficial:
+            beneficial_table = create_compact_bacteria_table(
+                beneficial,
+                'beneficial',
+                colors.HexColor('#10B981'),
+                max_rows=30
+            )
+            story.append(beneficial_table)
+        else:
+            story.append(Paragraph("No beneficial bacteria detected", styles['Normal']))
+        
+        # Switch to RIGHT COLUMN
+        story.append(FrameBreak())
+        
+        # RIGHT COLUMN: Pathogenic bacteria
+        story.append(Paragraph(
+            f"<b>Concerning Species</b> <font size=8 color='#666666'>({len(pathogenic)} detected)</font>",
+            ParagraphStyle('ColumnHeading', fontSize=10, textColor=colors.HexColor('#EF4444'),
+                          spaceAfter=6, fontName='Helvetica-Bold')
+        ))
+        
+        if pathogenic:
+            pathogenic_table = create_compact_bacteria_table(
+                pathogenic,
+                'pathogenic',
+                colors.HexColor('#EF4444'),
+                max_rows=12
+            )
+            story.append(pathogenic_table)
+        else:
+            story.append(Paragraph("No concerning bacteria detected", styles['Normal']))
+        
+        story.append(Spacer(1, 12))
+        
+        # Other bacteria
+        if neutral:
+            story.append(Paragraph(
+                f"<b>Other Species</b> <font size=8 color='#666666'>({len(neutral)} detected)</font>",
+                ParagraphStyle('ColumnHeading', fontSize=10, textColor=colors.HexColor('#6B7280'),
+                              spaceAfter=6, fontName='Helvetica-Bold')
+            ))
+            
+            neutral_table = create_compact_bacteria_table(
+                neutral,
+                'neutral',
+                colors.HexColor('#6B7280'),
+                max_rows=15
+            )
+            story.append(neutral_table)
         
         # Build PDF
         doc.build(story)
@@ -1375,9 +1654,12 @@ def generate_pdf_report(
         
         # Generate filename
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"mannbiome_report_{user.get('report_id', customer_id)}_{timestamp}.pdf"
+        if report_type == "domain" and requested_domains:
+            domain_suffix = "_".join(requested_domains)
+            filename = f"mannbiome_{domain_suffix}_report_{user.get('report_id', customer_id)}_{timestamp}.pdf"
+        else:
+            filename = f"mannbiome_report_{user.get('report_id', customer_id)}_{timestamp}.pdf"
         
-        # Return as streaming response
         return StreamingResponse(
             io.BytesIO(buffer.read()),
             media_type="application/pdf",
@@ -1387,7 +1669,10 @@ def generate_pdf_report(
     except HTTPException:
         raise
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
+    
 
 # Alternative endpoint with customer_id in URL
 @app.post("/api/customer/{customer_id}/reports/generate", tags=["Portal"])
