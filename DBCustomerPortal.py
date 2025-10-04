@@ -1454,7 +1454,7 @@ def generate_pdf_report(report_request: dict, customer_id: int = None, db: Sessi
         
         # Setup PDF
         buffer = io.BytesIO()
-        
+    
         width, height = A4
         
         # PAGE 1 TEMPLATE: Single column for health table
