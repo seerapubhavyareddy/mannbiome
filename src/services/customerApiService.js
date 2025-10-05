@@ -6,8 +6,8 @@ import mockDataService from '../data/mockPatients/mockDataService';
 
 class CustomerApiService {
   constructor() {
-    this.baseURL = 'https://gnss5bq5km.us-east-2.awsapprunner.com';
-    // this.baseURL = 'http://localhost:8001';
+    // this.baseURL = 'https://gnss5bq5km.us-east-2.awsapprunner.com';
+    this.baseURL = 'http://127.0.0.1:8001';
     this.currentCustomerId = null;
     this.mockDataService = mockDataService; // Keep as fallback only
   }
@@ -15,7 +15,7 @@ class CustomerApiService {
   // Set customer ID
   setCustomerId(customerId) {
     this.currentCustomerId = customerId;
-    console.log(`🔄 Customer set to: ${customerId}`);
+    // console.log(`🔄 Customer set to: ${customerId}`);
   }
 
   // Test API connectivity
@@ -35,7 +35,7 @@ class CustomerApiService {
   async request(endpoint, options = {}) {
     try {
       const url = `${this.baseURL}${endpoint}`;
-      console.log(`📡 API Request: ${url}`);
+      // console.log(`📡 API Request: ${url}`);
 
       const response = await fetch(url, {
         headers: {
@@ -50,11 +50,11 @@ class CustomerApiService {
       }
 
       const data = await response.json();
-      console.log(`✅ API Response received for: ${endpoint}`);
+      // console.log(`✅ API Response received for: ${endpoint}`);
       return { success: true, data, source: 'REAL_API' };
 
     } catch (error) {
-      console.error(`❌ API Error for ${endpoint}:`, error.message);
+      // console.error(`❌ API Error for ${endpoint}:`, error.message);
       return { success: false, error: error.message, source: 'API_ERROR' };
     }
   }
@@ -111,7 +111,12 @@ class CustomerApiService {
 
   // Get domain-specific bacteria data
   async getCustomerDomainBacteria(customerId, domain) {
-    console.log(`🎯 Getting ${domain} bacteria for customer ${customerId}`);
+    // console.log(`🎯 Getting ${domain} bacteria for customer ${customerId}`);
+
+    // Special handling for "overall" domain
+    if (domain.toLowerCase() === 'overall') {
+      return this.getOverallHealthSummary(customerId);
+    }
 
     // Map domain names to domain IDs for backend API
     const domainIdMap = {
@@ -126,20 +131,88 @@ class CustomerApiService {
     const domainId = domainIdMap[domain.toLowerCase()];
 
     if (!domainId) {
-      console.error(`❌ Invalid domain: ${domain}`);
+      // console.error(`❌ Invalid domain: ${domain}`);
       throw new Error(`Invalid domain: ${domain}`);
     }
 
-    // Try real API - no fallback
-    const result = await this.request(`/api/health-domains/${domainId}/modal-data/${customerId}`);
+    try {
+      // Get modal data (species, pathways, etc.)
+      const modalResult = await this.request(`/api/health-domains/${domainId}/modal-data/${customerId}`);
+      
+      if (!modalResult.success) {
+        throw new Error(`Failed to get ${domain} modal data: ${modalResult.error}`);
+      }
 
-    if (result.success) {
-      console.log(`✅ Real ${domain} data received`);
-      return result;
+      // Get recommendations for this domain
+      console.log(`🧠 Getting ${domain} recommendations for customer ${customerId}`);
+      const recommendationsResult = await this.request(`/api/customer/${customerId}/llm-recommendations?domain=${domain}&force_regenerate=false`);
+      
+      console.log('🔍 Full recommendations response:', recommendationsResult);
+      console.log('🔍 Recommendations data structure:', recommendationsResult.data);
+      
+      if (recommendationsResult.success && recommendationsResult.data && recommendationsResult.data.recommendations) {
+        // Add recommendations to the modal data
+        modalResult.data.recommendations = recommendationsResult.data.recommendations;
+        console.log(`✅ Added ${domain} recommendations to modal data`);
+      } else {
+        console.warn(`⚠️ No recommendations available for ${domain}:`, recommendationsResult);
+        modalResult.data.recommendations = null;
+      }
+
+      // console.log(`✅ Complete ${domain} data received (with recommendations)`);
+      return modalResult;
+
+    } catch (error) {
+      // console.error(`❌ Error getting ${domain} data:`, error);
+      throw error;
     }
+  }
 
-    // Don't fall back - throw error instead
-    throw new Error(`Failed to get ${domain} data from API: ${result.error}`);
+  // Get overall health summary (aggregate of all domains)
+  async getOverallHealthSummary(customerId) {
+    try {
+      console.log(`📊 Getting overall health summary for customer ${customerId}`);
+      
+      // Get overall microbiome data
+      const overallResult = await this.request(`/api/customer/${customerId}/microbiome-data`);
+      
+      if (overallResult.success) {
+        // Structure the data similar to domain-specific data
+        const overallData = {
+          domain: {
+            domain_id: 0,
+            domain_name: 'overall',
+            description: 'Overall health summary across all domains', 
+            score: overallResult.data.scores?.overall_score || 3.5,
+            diversity: overallResult.data.scores?.diversity_score || 3.0,
+            status: this._getStatusFromScore(overallResult.data.scores?.overall_score || 3.5),
+            comment: 'Your overall microbiome health summary'
+          },
+          species_carousel: overallResult.data.species_carousel || {
+            bacteria: { title: 'Top Bacterial Species', status: 'Normal', species: [] },
+            probiotics: { title: 'Probiotic Organisms', status: 'Normal', species: [] },
+            pathogens: { title: 'Pathogenic Bacteria', status: 'Normal', species: [] },
+            virus: { title: 'Viral Species', status: 'Normal', species: [] },
+            fungi: { title: 'Fungal Species', status: 'Normal', species: [] },
+            protozoa: { title: 'Protozoa Species', status: 'Normal', species: [] }
+          },
+          pathway_carousel: [], // Overall microbiome data doesn't have pathway carousel
+          recommendations: null // Overall doesn't have specific recommendations
+        };
+
+        console.log(`✅ Overall health summary prepared`);
+        return {
+          success: true,
+          data: overallData,
+          source: 'REAL_API'
+        };
+      } else {
+        throw new Error(`Failed to get overall health data: ${overallResult.error}`);
+      }
+    } catch (error) {
+      console.error(`❌ Error getting overall health summary:`, error);
+      throw error;
+    }
   }
 
   // Load complete dashboard data
@@ -172,7 +245,17 @@ class CustomerApiService {
         const healthData = {
           diversityScore: dashboardData.health_data.diversity_score,
           overallScore: dashboardData.health_data.overall_score,
-          domains: dashboardData.health_data.domains
+          domains: {
+            // Add overall domain if not present
+            overall: {
+              score: dashboardData.health_data.overall_score || 3.5,
+              diversity: dashboardData.health_data.diversity_score || 3.0,
+              status: this._getStatusFromScore(dashboardData.health_data.overall_score || 3.5),
+              comment: 'Your overall health indicators show positive trends with room for improvement in specific areas.'
+            },
+            // Include existing domains
+            ...dashboardData.health_data.domains
+          }
         };
 
         console.log('✅ Transformed data:', { userData, healthData });
@@ -368,6 +451,14 @@ class CustomerApiService {
       ],
       message: "Available test customers (will use real API if data exists, otherwise mock data)"
     };
+  }
+
+  // Helper method to determine status from score
+  _getStatusFromScore(score) {
+    if (score >= 4.0) return 'good';
+    if (score >= 3.0) return 'warning';
+    if (score >= 2.0) return 'poor';
+    return 'critical';
   }
 }
 

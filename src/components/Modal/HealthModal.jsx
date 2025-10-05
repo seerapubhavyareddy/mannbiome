@@ -42,14 +42,14 @@ const HealthModal = () => {
     setError(null);
     
     try {
-      console.log(`Fetching customer-specific data for ${domainName} domain (Customer ${state.customerId})`);
+      // console.log(`Fetching customer-specific data for ${domainName} domain (Customer ${state.customerId})`);
       
       // Use the enhanced API service that supports customer-specific data
       const response = await apiService.getCustomerDomainBacteria(state.customerId, domainName);
       
       if (response.success) {
-        console.log('Customer-specific modal data received:', response);
-        console.log(`Data source: ${response.source}`);
+        // console.log('Customer-specific modal data received:', response);
+        // console.log(`Data source: ${response.source}`);
         
         // Set the customer-specific data
         setModalData(response.data);
@@ -58,7 +58,7 @@ const HealthModal = () => {
         throw new Error(response.error || 'Failed to load domain data');
       }
     } catch (error) {
-      console.error(`Error loading customer-specific data for ${domainName}:`, error);
+      // console.error(`Error loading customer-specific data for ${domainName}:`, error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -69,7 +69,7 @@ const HealthModal = () => {
   useEffect(() => {
     if (isCustomerDataModal) {
       // Modal content is already a data object, use it directly
-      console.log('Using pre-loaded customer data object');
+      // console.log('Using pre-loaded customer data object');
       setModalData(state.modal.content);
     } else if (isDetailedDomainModal) {
       // Need to fetch data for this domain
@@ -124,7 +124,7 @@ const HealthModal = () => {
     // Handle both domain_info and domain structures
     const domainInfo = modalData.domain_info || modalData.domain;
     // Add this debug line right after line 95 (before the domainName assignment)
-    console.log('🔍 Debug modal content:', state.modal.content, typeof state.modal.content);
+    // console.log('🔍 Debug modal content:', state.modal.content, typeof state.modal.content);
 
     const domainName = typeof state.modal.content === 'string' ? 
   `${state.modal.content.charAt(0).toUpperCase() + state.modal.content.slice(1)} Health Details` :

@@ -22,16 +22,16 @@ const Download = () => {
 
   // Debug logging to understand user object structure
   useEffect(() => {
-    console.log('Debug - Full state:', state);
-    console.log('Debug - User object:', user);
-    console.log('Debug - Available user properties:', Object.keys(user || {}));
-    console.log('Debug - Potential customer IDs:', {
-      'user.user_id': user?.user_id,
-      'user.customer_id': user?.customer_id,
-      'user.userId': user?.userId,
-      'state.customerId': state?.customerId,
-      'state.userId': state?.userId
-    });
+    // console.log('Debug - Full state:', state);
+    // console.log('Debug - User object:', user);
+    // console.log('Debug - Available user properties:', Object.keys(user || {}));
+    // console.log('Debug - Potential customer IDs:', {
+    //   'user.user_id': user?.user_id,
+    //   'user.customer_id': user?.customer_id,
+    //   'user.userId': user?.userId,
+    //   'state.customerId': state?.customerId,
+    //   'state.userId': state?.userId
+    // });
   }, [state, user]);
 
   useEffect(() => {
@@ -64,23 +64,23 @@ const Download = () => {
                         state?.userId ||
                         1; // Fallback to customer ID 1 for testing
       
-      console.log('Looking for customer ID in:', {
-        'user.user_id': user?.user_id,
-        'user.customer_id': user?.customer_id,
-        'user.userId': user?.userId,
-        'state.customerId': state?.customerId,
-        'state.userId': state?.userId,
-        'using': customerId
-      });
+      // console.log('Looking for customer ID in:', {
+      //   'user.user_id': user?.user_id,
+      //   'user.customer_id': user?.customer_id,
+      //   'user.userId': user?.userId,
+      //   'state.customerId': state?.customerId,
+      //   'state.userId': state?.userId,
+      //   'using': customerId
+      // });
       
       if (!customerId) {
-        console.error('No customer ID found in user context');
+        // console.error('No customer ID found in user context');
         setStatusMessage('User session error. Please refresh the page and try again.');
         setIsSuccess(false);
         return;
       }
 
-      console.log(`Attempting download with customer ID: ${customerId}`);
+      // console.log(`Attempting download with customer ID: ${customerId}`);
 
       if (reportType === 'full') {
         await downloadReport('full', null, customerId);
@@ -102,7 +102,7 @@ const Download = () => {
         setIsSuccess(true);
       }
     } catch (error) {
-      console.error('Download error:', error);
+      // console.error('Download error:', error);
       setStatusMessage(error.message || 'Error generating report. Please try again.');
       setIsSuccess(false);
     }

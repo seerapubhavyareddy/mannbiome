@@ -18,7 +18,12 @@ python-dotenv==1.0.0
 
 # Date and time handling
 python-dateutil==2.8.2
-# reportlab>=3.6.0
+
+# AI/LLM Dependencies
+anthropic==0.40.0
+
+# PDF generation
+reportlab==4.0.4
+
 # For AWS Lambda deployment (optional, we'll add this later)
 # mangum==0.17.0
-reportlab==4.0.4

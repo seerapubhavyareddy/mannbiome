@@ -946,3 +946,30 @@
     border: 1px solid #333;
   }
 }
+
+/* ================================
+   PRIORITY BADGES
+   ================================ */
+.priority-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-badge.high {
+  background-color: #dc3545;
+  color: white;
+}
+
+.priority-badge.medium {
+  background-color: #fd7e14;
+  color: white;
+}
+
+.priority-badge.low {
+  background-color: #6c757d;
+  color: white;
+}

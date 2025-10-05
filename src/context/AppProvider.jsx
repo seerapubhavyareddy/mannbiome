@@ -178,6 +178,36 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  // NEW: Generate recommendations when customer logs in
+  const generateRecommendationsOnLogin = useCallback(async (customerId) => {
+    try {
+      console.log(`🧠 Generating recommendations for customer ${customerId}...`);
+      
+      // Call the new cached recommendations endpoint in background
+      const response = await fetch(`${customerApiService.baseURL}/api/customer/${customerId}/generate-all-recommendations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Recommendations generated:', data);
+        
+        // Optionally show a subtle notification
+        if (data.success) {
+          console.log(`🎯 Generated recommendations for ${data.domains_processed} domains`);
+        }
+      } else {
+        console.warn('⚠️ Recommendation generation failed (non-blocking):', response.status);
+      }
+    } catch (error) {
+      console.error('⚠️ Recommendation generation failed (non-blocking):', error);
+      // Don't throw - this is a background operation that shouldn't block login
+    }
+  }, []);
+
   // UPDATED: Load dashboard data using customer-specific service
   const loadDashboardData = useCallback(async () => {
     if (!state.customerId) {
@@ -266,10 +296,13 @@ export function AppProvider({ children }) {
       
       const customerId = await resolveCustomerFromURL();
       console.log(`✅ Customer resolved: ${customerId}`);
+      
+      // Generate recommendations in background (don't block UI)
+      generateRecommendationsOnLogin(customerId);
     };
     
     initializeApp();
-  }, [resolveCustomerFromURL]);
+  }, [resolveCustomerFromURL, generateRecommendationsOnLogin]);
 
   // Trigger dashboard load when customer ID changes - SAME AS BEFORE
   useEffect(() => {
@@ -293,7 +326,7 @@ export function AppProvider({ children }) {
     console.log('🔍 Opening modal with content:', content, 'title:', title);
     
     // Check if this is a domain request - use customer-specific data
-    if (typeof content === 'string' && ['liver', 'aging', 'skin', 'cognitive', 'gut', 'heart'].includes(content)) {
+    if (typeof content === 'string' && ['liver', 'aging', 'skin', 'cognitive', 'gut', 'heart', 'overall'].includes(content)) {
       console.log(`🎯 Domain modal detected: ${content} - fetching customer-specific data for ${state.customerId}`);
       
       try {

@@ -8,6 +8,10 @@ from sqlalchemy.orm import sessionmaker, Session
 from typing import Dict, List, Tuple, Any, Optional
 from datetime import datetime, date
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 import math
 from fastapi.responses import FileResponse, StreamingResponse
 from reportlab.pdfgen import canvas
@@ -22,6 +26,11 @@ from datetime import datetime
 from reportlab.lib.utils import ImageReader
 import io
 import tempfile
+import json
+import traceback
+
+# Import the cached recommendation service
+from llm_recommendations_cached import CachedRecommendationService
 
 
 
@@ -69,6 +78,12 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# -----------------------------------------------------------------------------
+# Initialize services
+# -----------------------------------------------------------------------------
+# Initialize the cached recommendation service
+cached_recommendation_service = CachedRecommendationService()
 
 # -----------------------------------------------------------------------------
 # Health: liveness + readiness
@@ -1686,6 +1701,99 @@ def generate_customer_pdf_report(
 # -----------------------------------------------------------------------------
 # No /api/debug/* or /api/test/* endpoints (removed by request)
 # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# AI: Cached LLM Recommendations
+# -----------------------------------------------------------------------------
+
+@app.get("/api/customer/{customer_id}/llm-recommendations", tags=["AI"])
+async def get_llm_recommendations(
+    customer_id: int,
+    domain: str,
+    force_regenerate: bool = False,  # Query param to force refresh
+    db: Session = Depends(get_db)
+):
+    """
+    Get personalized recommendations - uses cache if available
+    """
+    try:
+        result = cached_recommendation_service.get_recommendations(
+            customer_id=customer_id,
+            domain_name=domain,
+            db=db,
+            force_regenerate=force_regenerate
+        )
+        
+        return {
+            "success": result["success"],
+            "customer_id": customer_id,
+            "domain": domain,
+            "source": result.get("source", "unknown"),
+            "recommendations": result.get("recommendations"),
+            "generated_at": result.get("generated_at"),
+            "expires_at": result.get("expires_at"),
+            "model": result.get("model")
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/customer/{customer_id}/generate-all-recommendations", tags=["AI"])
+async def generate_all_recommendations_on_login(
+    customer_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Generate recommendations for ALL domains
+    Call this when customer logs in
+    """
+    try:
+        result = cached_recommendation_service.generate_all_domains_on_login(
+            customer_id=customer_id,
+            db=db
+        )
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/customer/{customer_id}/recommendation-cache-status", tags=["AI"])
+async def get_recommendation_cache_status(
+    customer_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get cache status for all domains for a customer
+    Useful for debugging and monitoring
+    """
+    try:
+        result = cached_recommendation_service.get_cache_status(
+            customer_id=customer_id,
+            db=db
+        )
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/admin/cleanup-expired-recommendations", tags=["AI", "Admin"])
+async def cleanup_expired_recommendations(
+    db: Session = Depends(get_db)
+):
+    """
+    Clean up expired recommendations (maintenance endpoint)
+    """
+    try:
+        result = cached_recommendation_service.cleanup_expired_recommendations(db)
+        return result
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # -----------------------------------------------------------------------------
 # __main__

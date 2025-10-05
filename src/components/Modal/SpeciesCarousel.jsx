@@ -275,19 +275,19 @@ const RecommendationItem = ({ item }) => {
 // ✅ NEW: RecommendationsSection component
 // ✅ UPDATED: RecommendationsSection component with domain-specific support
 const RecommendationsSection = ({ recommendations, currentDomain }) => {
-  console.log('🔍 RecommendationsSection received:', recommendations);
-  console.log('🔍 Full RecommendationsSection received:', recommendations);
-  console.log('🔍 Probiotics data:', recommendations?.probiotics);
-  console.log('🔍 First probiotic item:', recommendations?.probiotics?.[0]);
-  console.log('🔍 Supplements data:', recommendations?.supplements);
-  console.log('🔍 First supplement item:', recommendations?.supplements?.[0]);
+  // console.log('🔍 RecommendationsSection received:', recommendations);
+  // console.log('🔍 Full RecommendationsSection received:', recommendations);
+  // console.log('🔍 Probiotics data:', recommendations?.probiotics);
+  // console.log('🔍 First probiotic item:', recommendations?.probiotics?.[0]);
+  // console.log('🔍 Supplements data:', recommendations?.supplements);
+  // console.log('🔍 First supplement item:', recommendations?.supplements?.[0]);
   
   if (!recommendations) return null;
 
   // ✅ NEW: Helper function to get current domain from URL or context
   const getCurrentDomain = () => {
-  console.log('🎯 Checking domain:', currentDomain);
-  console.log('🎯 Available domains:', recommendations.domain_specific ? Object.keys(recommendations.domain_specific) : 'none');
+  // console.log('🎯 Checking domain:', currentDomain);
+  // console.log('🎯 Available domains:', recommendations.domain_specific ? Object.keys(recommendations.domain_specific) : 'none');
   
   // Use the passed currentDomain prop
   if (currentDomain && recommendations.domain_specific && recommendations.domain_specific[currentDomain]) {
@@ -408,11 +408,125 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
       {/* ✅ NEW: Domain-Specific Recommendations Section (at the top for prominence) */}
       {renderDomainSpecificRecommendations()}
       
-      {/* ✅ EXISTING: Probiotics */}
+      {/* ✅ NEW: Dietary Recommendations */}
+      {recommendations.dietary_recommendations && recommendations.dietary_recommendations.length > 0 && (
+        <div className="recommendation-category">
+          <div className="category-header">
+            <h3 className="category-title">🥗 Dietary Recommendations</h3>
+          </div>
+          <div className="recommendation-grid">
+            {recommendations.dietary_recommendations.map((item, index) => (
+              <div key={index} className="recommendation-item-card">
+                <div className="recommendation-header">
+                  <h4 className="recommendation-title">{item.item}</h4>
+                  <span className={`priority-badge ${item.priority}`}>{item.priority}</span>
+                </div>
+                <p className="recommendation-description">{item.rationale}</p>
+                <div className="recommendation-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Frequency:</span>
+                    <span className="detail-value">{item.frequency}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ✅ NEW: Lifestyle Recommendations */}
+      {recommendations.lifestyle_recommendations && recommendations.lifestyle_recommendations.length > 0 && (
+        <div className="recommendation-category">
+          <div className="category-header">
+            <h3 className="category-title">🏃 Lifestyle Recommendations</h3>
+          </div>
+          <div className="recommendation-grid">
+            {recommendations.lifestyle_recommendations.map((item, index) => (
+              <div key={index} className="recommendation-item-card">
+                <div className="recommendation-header">
+                  <h4 className="recommendation-title">{item.activity}</h4>
+                  <span className={`priority-badge ${item.priority}`}>{item.priority}</span>
+                </div>
+                <p className="recommendation-description">{item.rationale}</p>
+                <div className="recommendation-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Implementation:</span>
+                    <span className="detail-value">{item.implementation}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ✅ UPDATED: Probiotic Recommendations */}
+      {recommendations.probiotic_recommendations && recommendations.probiotic_recommendations.length > 0 && (
+        <div className="recommendation-category">
+          <div className="category-header">
+            <h3 className="category-title">🦠 Probiotic Recommendations</h3>
+          </div>
+          <div className="recommendation-grid">
+            {recommendations.probiotic_recommendations.map((item, index) => (
+              <div key={index} className="recommendation-item-card">
+                <div className="recommendation-header">
+                  <h4 className="recommendation-title">{item.strain}</h4>
+                  <span className="recommendation-checkmark">✓</span>
+                </div>
+                <p className="recommendation-description">{item.rationale}</p>
+                <div className="recommendation-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Dosage:</span>
+                    <span className="detail-value">{item.dosage}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">Duration:</span>
+                    <span className="detail-value">{item.duration}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ✅ NEW: Prebiotic Recommendations */}
+      {recommendations.prebiotic_recommendations && recommendations.prebiotic_recommendations.length > 0 && (
+        <div className="recommendation-category">
+          <div className="category-header">
+            <h3 className="category-title">🌾 Prebiotic Recommendations</h3>
+          </div>
+          <div className="recommendation-grid">
+            {recommendations.prebiotic_recommendations.map((item, index) => (
+              <div key={index} className="recommendation-item-card">
+                <div className="recommendation-header">
+                  <h4 className="recommendation-title">{item.source}</h4>
+                  <span className="recommendation-checkmark">✓</span>
+                </div>
+                <p className="recommendation-description">{item.rationale}</p>
+                <div className="recommendation-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Amount:</span>
+                    <span className="detail-value">{item.amount}</span>
+                  </div>
+                  {item.food_sources && (
+                    <div className="detail-row">
+                      <span className="detail-label">Food Sources:</span>
+                      <span className="detail-value">{item.food_sources.join(', ')}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ✅ LEGACY: Keep old structure for backwards compatibility */}
       {recommendations.probiotics && recommendations.probiotics.length > 0 && (
         <div className="recommendation-category">
           <div className="category-header">
-            <h3 className="category-title">Probiotics</h3>
+            <h3 className="category-title">Probiotics (Legacy)</h3>
           </div>
           <div className="recommendation-grid">
             {recommendations.probiotics.map((item, index) => (
@@ -422,11 +536,11 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
         </div>
       )}
 
-      {/* ✅ EXISTING: Supplements */}
+      {/* ✅ LEGACY: Keep old structure for backwards compatibility */}
       {recommendations.supplements && recommendations.supplements.length > 0 && (
         <div className="recommendation-category">
           <div className="category-header">
-            <h3 className="category-title">Supplements</h3>
+            <h3 className="category-title">Supplements (Legacy)</h3>
           </div>
           <div className="recommendation-grid">
             {recommendations.supplements.map((item, index) => (
@@ -469,6 +583,26 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
           </div>
         </div>
       )}
+
+      {/* ✅ NEW: Summary Section */}
+      {recommendations.summary && (
+        <div className="recommendation-category">
+          <div className="category-header">
+            <h3 className="category-title">📋 Summary</h3>
+          </div>
+          <div className="summary-content" style={{
+            background: '#f8f9fa',
+            padding: '20px',
+            borderRadius: '8px',
+            border: '1px solid #e9ecef',
+            fontSize: '14px',
+            lineHeight: '1.6',
+            color: '#495057'
+          }}>
+            {recommendations.summary}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -477,8 +611,8 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
 const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {// ← Add recommendations prop
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  console.log('📊 SpeciesCarousel received data:', speciesData);
-  console.log('💊 SpeciesCarousel received recommendations:', recommendations); // ← Debug log
+  // console.log('📊 SpeciesCarousel received data:', speciesData);
+  // console.log('💊 SpeciesCarousel received recommendations:', recommendations); // ← Debug log
 
   // ✅ FIXED: Handle the correct data structure
   const categoryOrder = ['bacteria', 'probiotics', 'virus', 'fungi', 'pathogens', 'protozoa'];
@@ -489,11 +623,11 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
     return categoryData && categoryData.species && categoryData.species.length > 0;
   });
 
-  console.log('🔍 Available slides:', slides);
-  console.log('🔍 Slides data:', slides.map(cat => ({
-    category: cat,
-    speciesCount: speciesData?.[cat]?.species?.length || 0
-  })));
+  // console.log('🔍 Available slides:', slides);
+  // console.log('🔍 Slides data:', slides.map(cat => ({
+  //   category: cat,
+  //   speciesCount: speciesData?.[cat]?.species?.length || 0
+  // })));
 
   const moveToSlide = (slideIndex) => {
     setCurrentSlide(slideIndex);
@@ -579,7 +713,7 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
               const species = categoryData.species;
               const status = formatCategoryStatus(category);
               
-              console.log(`🔍 Rendering ${category} with ${species.length} species`);
+              // console.log(`🔍 Rendering ${category} with ${species.length} species`);
               
               return (
                 <div key={category} className="carousel-slide">
