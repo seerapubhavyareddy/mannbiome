@@ -1,4 +1,19 @@
-# Getting Started with Create React App
+# MannBiome - Microbiome Analysis Platform
+
+A full-stack microbiome analysis platform with AI-powered recommendations using React frontend and Python FastAPI backend.
+
+## Environment Setup
+
+1. Copy `.env.template` to `.env`:
+   ```bash
+   cp .env.template .env
+   ```
+
+2. Fill in your environment variables in `.env`:
+   - `DATABASE_URL`: PostgreSQL connection string
+   - `ANTHROPIC_API_KEY`: Your Anthropic API key for AI recommendations
+
+## Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
