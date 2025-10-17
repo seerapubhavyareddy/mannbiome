@@ -49,16 +49,16 @@ const Header = () => {
   }, [isMobileMenuOpen]);
 
   const tabs = [
-    { 
-      id: 'report', 
-      label: 'Report', 
-      icon: 'report', 
+    {
+      id: 'report',
+      label: 'Report',
+      icon: 'report',
       page: 'report'
     },
-    { 
-      id: 'clinical-trials', 
-      label: 'Clinical Trials', 
-      icon: 'activity', 
+    {
+      id: 'clinical-trials',
+      label: 'Clinical Trials',
+      icon: 'activity',
       page: 'clinical-trials'
     }
   ];
@@ -96,7 +96,7 @@ const Header = () => {
         </>
       )
     };
-    
+
     return iconPaths[iconType] || null;
   };
 
@@ -114,11 +114,25 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    console.log('Logout clicked');
+    console.log('🚪 Logout initiated');
+
     // Close mobile menu if open
     if (isMobile) {
       setIsMobileMenuOpen(false);
     }
+
+    // Clear all authentication data
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Get vendor login URL from environment variable
+    const vendorLoginBaseUrl = process.env.REACT_APP_VENDOR_LOGIN_URL || 'http://localhost:8000/login';
+    const redirectUrl = `${vendorLoginBaseUrl}?type=customer`;
+
+    console.log('✅ Redirecting to vendor login:', redirectUrl);
+
+    // Use replace to prevent back button
+    window.location.replace(redirectUrl);
   };
 
   return (
@@ -131,7 +145,7 @@ const Header = () => {
               <a href="#home" className="nav-link">Home</a>
             )}
           </div>
-          
+
           {/* Desktop Tabs - Hidden on mobile */}
           {!isMobile && (
             <div className="tabs-section">
@@ -152,7 +166,7 @@ const Header = () => {
 
           {/* Mobile Menu Toggle - Hidden on desktop */}
           {isMobile && (
-            <button 
+            <button
               className="mobile-nav-toggle"
               onClick={toggleMobileMenu}
               aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -163,7 +177,7 @@ const Header = () => {
               </svg>
             </button>
           )}
-          
+
           <div className="user-menu">
             <div className="user-icon" tabIndex="0" role="button" aria-label={`User ${user.name}`}>
               {user.initials}
@@ -180,14 +194,14 @@ const Header = () => {
           <div className="mobile-tabs-wrapper">
             <div className={`tabs-section mobile ${isMobileMenuOpen ? 'open' : ''}`}>
               {/* Home link in mobile menu */}
-              <a 
-                href="#home" 
-                className="nav-link" 
+              <a
+                href="#home"
+                className="nav-link"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
               </a>
-              
+
               {/* Tab items in mobile menu */}
               {tabs.map((tab) => (
                 <div
