@@ -16,7 +16,7 @@ import './App.css';
 // API Status Component
 const ApiStatus = () => {
   const { state } = useAppContext();
-  
+
   if (state.loading) {
     return (
       <div style={{
@@ -82,7 +82,7 @@ const AppContent = () => {
       <div className="app">
         <Header />
         <ApiStatus />
-        
+
         {state.error && (
           <div style={{
             background: '#fff3cd',
@@ -95,13 +95,13 @@ const AppContent = () => {
             ⚠️ {state.error}
           </div>
         )}
-        
+
         {/* Clinical Trials Full Page */}
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
           <ClinicalTrials />
         </div>
         <HealthModal />
-        
+
         {/* Add spinning animation CSS */}
         <style>{`
           @keyframes spin {
@@ -118,7 +118,7 @@ const AppContent = () => {
     <div className="app">
       <Header />
       <ApiStatus />
-      
+
       {state.error && (
         <div style={{
           background: '#fff3cd',
@@ -131,7 +131,7 @@ const AppContent = () => {
           ⚠️ {state.error}
         </div>
       )}
-      
+
       <div className="portal-container">
         <SideNav />
         <main className="content-area">
@@ -145,7 +145,7 @@ const AppContent = () => {
         </main>
       </div>
       <HealthModal />
-      
+
       {/* Add spinning animation CSS */}
       <style>{`
         @keyframes spin {

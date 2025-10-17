@@ -16,7 +16,7 @@ const ConfidenceTooltip = ({ level, className = "" }) => {
         };
       case 'B':
         return {
-          title: 'Medium Confidence (B)', 
+          title: 'Medium Confidence (B)',
           description: 'Moderate scientific evidence with some peer-reviewed studies supporting this bacterial identification and health associations.',
           color: '#d97706'
         };
@@ -114,14 +114,14 @@ const SpeciesCard = ({ title, status, species, category }) => {
     <div className="species-card">
       <div className="species-title">
         <span>{title}</span>
-        <span 
+        <span
           className="status-badge"
           style={{ color: getStatusColor(status) }}
         >
           Status: {status}
         </span>
       </div>
-      
+
       <div className="species-grid">
         {species.map((speciesItem, index) => (
           <SpeciesItem
@@ -150,7 +150,7 @@ const SpeciesItem = ({ species, category }) => {
   const getStatusColor = (status) => {
     const colorMap = {
       'good': '#4CAF50',
-      'normal': '#FF9800', 
+      'normal': '#FF9800',
       'low': '#FF5722',
       'high': '#FF5722'
     };
@@ -171,14 +171,14 @@ const SpeciesItem = ({ species, category }) => {
     <div className="species-item">
       <div className="species-header">
         <h4 className="species-name">{species.name}</h4>
-        <div 
+        <div
           className="species-status"
           style={{ color: getStatusColor(species.status) }}
         >
           {species.status?.toUpperCase()}
         </div>
       </div>
-      
+
       <div className="species-metrics">
         <div className="metric-row">
           <span className="metric-label">Current Level:</span>
@@ -190,26 +190,26 @@ const SpeciesItem = ({ species, category }) => {
             <span className="metric-value">{formatPercentage(species.percentage)}</span>
           </div>
         )}
-       {species.evidence_strength && (
-  <div className="metric-row">
-    <span className="metric-label">Confidence Level:</span>
-    <ConfidenceTooltip level={species.evidence_strength} />
-  </div>
-)}
+        {species.evidence_strength && (
+          <div className="metric-row">
+            <span className="metric-label">Confidence Level:</span>
+            <ConfidenceTooltip level={species.evidence_strength} />
+          </div>
+        )}
       </div>
 
       <div className="species-progress">
         <div className="progress-bar">
-          <div 
+          <div
             className="progress-fill"
-            style={{ 
+            style={{
               width: `${Math.min(species.range_fill_width || 50, 100)}%`,
               backgroundColor: getStatusColor(species.status)
             }}
           />
-          <div 
+          <div
             className="progress-marker"
-            style={{ 
+            style={{
               left: `${Math.min(species.marker_position || 55, 100)}%`
             }}
           />
@@ -231,9 +231,9 @@ const RecommendationItem = ({ item }) => {
         <h4 className="recommendation-title">{item.title || item.name}</h4>
         <span className="recommendation-checkmark">✓</span>
       </div>
-      
+
       <p className="recommendation-description">{item.description}</p>
-      
+
       <div className="recommendation-details">
         <div className="detail-row">
           <span className="detail-label">Dosage:</span>
@@ -281,29 +281,29 @@ const RecommendationsSection = ({ recommendations, currentDomain }) => {
   // console.log('🔍 First probiotic item:', recommendations?.probiotics?.[0]);
   // console.log('🔍 Supplements data:', recommendations?.supplements);
   // console.log('🔍 First supplement item:', recommendations?.supplements?.[0]);
-  
+
   if (!recommendations) return null;
 
   // ✅ NEW: Helper function to get current domain from URL or context
   const getCurrentDomain = () => {
-  // console.log('🎯 Checking domain:', currentDomain);
-  // console.log('🎯 Available domains:', recommendations.domain_specific ? Object.keys(recommendations.domain_specific) : 'none');
-  
-  // Use the passed currentDomain prop
-  if (currentDomain && recommendations.domain_specific && recommendations.domain_specific[currentDomain]) {
-    return currentDomain;
-  }
-  
-  // Fallback: try to find any available domain
-  if (recommendations.domain_specific) {
-    const domains = Object.keys(recommendations.domain_specific);
-    return domains[0];
-  }
-  
-  return null;
-};
+    // console.log('🎯 Checking domain:', currentDomain);
+    // console.log('🎯 Available domains:', recommendations.domain_specific ? Object.keys(recommendations.domain_specific) : 'none');
 
-const activeDomain = getCurrentDomain(); // ← Changed variable name to activeDomain
+    // Use the passed currentDomain prop
+    if (currentDomain && recommendations.domain_specific && recommendations.domain_specific[currentDomain]) {
+      return currentDomain;
+    }
+
+    // Fallback: try to find any available domain
+    if (recommendations.domain_specific) {
+      const domains = Object.keys(recommendations.domain_specific);
+      return domains[0];
+    }
+
+    return null;
+  };
+
+  const activeDomain = getCurrentDomain(); // ← Changed variable name to activeDomain
   // ✅ NEW: Render domain-specific recommendations
   const renderDomainSpecificRecommendations = () => {
     if (!recommendations.domain_specific || !currentDomain) return null;
@@ -314,7 +314,7 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
     return (
       <div className="recommendation-category domain-specific-category">
         <div className="category-header">
-          <h3 className="category-title" style={{ 
+          <h3 className="category-title" style={{
             background: 'linear-gradient(135deg, #00BFA5, #4CAF50)',
             color: 'white',
             border: 'none'
@@ -322,11 +322,11 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
             🎯 {currentDomain.charAt(0).toUpperCase() + currentDomain.slice(1)}-Specific Recommendations
           </h3>
         </div>
-        
-        <div className="domain-specific-grid" style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-          gap: '20px' 
+
+        <div className="domain-specific-grid" style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px'
         }}>
           {/* Domain-specific supplements */}
           {domainRecs.supplements && domainRecs.supplements.length > 0 && (
@@ -334,10 +334,10 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
               <h4 style={{ color: '#00BFA5', marginBottom: '12px' }}>💊 Specialized Supplements</h4>
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 {domainRecs.supplements.map((supplement, index) => (
-                  <li key={index} style={{ 
-                    background: '#f8f9fa', 
-                    padding: '12px', 
-                    marginBottom: '8px', 
+                  <li key={index} style={{
+                    background: '#f8f9fa',
+                    padding: '12px',
+                    marginBottom: '8px',
                     borderRadius: '8px',
                     borderLeft: '4px solid #00BFA5'
                   }}>
@@ -357,10 +357,10 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
               <h4 style={{ color: '#4CAF50', marginBottom: '12px' }}>🏃 Specialized Lifestyle</h4>
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 {domainRecs.lifestyle.map((lifestyle, index) => (
-                  <li key={index} style={{ 
-                    background: '#f8f9fa', 
-                    padding: '12px', 
-                    marginBottom: '8px', 
+                  <li key={index} style={{
+                    background: '#f8f9fa',
+                    padding: '12px',
+                    marginBottom: '8px',
                     borderRadius: '8px',
                     borderLeft: '4px solid #4CAF50'
                   }}>
@@ -380,10 +380,10 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
               <h4 style={{ color: '#FF9800', marginBottom: '12px' }}>🥗 Specialized Diet</h4>
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 {domainRecs.diet.map((diet, index) => (
-                  <li key={index} style={{ 
-                    background: '#f8f9fa', 
-                    padding: '12px', 
-                    marginBottom: '8px', 
+                  <li key={index} style={{
+                    background: '#f8f9fa',
+                    padding: '12px',
+                    marginBottom: '8px',
                     borderRadius: '8px',
                     borderLeft: '4px solid #FF9800'
                   }}>
@@ -404,10 +404,10 @@ const activeDomain = getCurrentDomain(); // ← Changed variable name to activeD
   return (
     <div className="recommendations-section">
       <h2 className="recommendations-title">Recommendations</h2>
-      
+
       {/* ✅ NEW: Domain-Specific Recommendations Section (at the top for prominence) */}
       {renderDomainSpecificRecommendations()}
-      
+
       {/* ✅ NEW: Dietary Recommendations */}
       {recommendations.dietary_recommendations && recommendations.dietary_recommendations.length > 0 && (
         <div className="recommendation-category">
@@ -615,8 +615,8 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
   // console.log('💊 SpeciesCarousel received recommendations:', recommendations); // ← Debug log
 
   // ✅ FIXED: Handle the correct data structure
-  const categoryOrder = ['bacteria', 'probiotics', 'virus', 'fungi', 'pathogens', 'protozoa'];
-  
+  const categoryOrder = ['pathogens', 'probiotics', 'virus', 'fungi', 'protozoa', 'bacteria'];
+
   // ✅ FIXED: Check for species array inside each category object
   const slides = categoryOrder.filter(category => {
     const categoryData = speciesData?.[category];
@@ -635,12 +635,12 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
 
   const getCategoryStatus = (category, species) => {
     if (!species || species.length === 0) return 'normal';
-    
+
     const avgPercentage = species.reduce((sum, s) => {
       const percentage = s.percentage || 0;
       return sum + percentage;
     }, 0) / species.length;
-    
+
     if (category === 'pathogens' || category === 'protozoa') {
       return avgPercentage < 0.3 ? 'excellent' : avgPercentage < 0.6 ? 'good' : 'warning';
     } else {
@@ -653,9 +653,9 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
     if (categoryData && categoryData.title) {
       return categoryData.title;
     }
-    
+
     const titleMap = {
-      'bacteria': 'Top Bacterial Species',
+      'bacteria': 'Beneficial Species',
       'probiotics': 'Probiotic Organisms',
       'virus': 'Viral Species',
       'fungi': 'Fungal Species',
@@ -670,7 +670,7 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
     if (categoryData && categoryData.status) {
       return categoryData.status;
     }
-    
+
     const statusMap = {
       'excellent': 'Excellent',
       'good': 'Good',
@@ -704,7 +704,7 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
       {/* ✅ EXISTING: Species Carousel */}
       <div className="species-carousel">
         <div className="carousel">
-          <div 
+          <div
             className="carousel-track"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
@@ -712,9 +712,9 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
               const categoryData = speciesData[category];
               const species = categoryData.species;
               const status = formatCategoryStatus(category);
-              
+
               // console.log(`🔍 Rendering ${category} with ${species.length} species`);
-              
+
               return (
                 <div key={category} className="carousel-slide">
                   <SpeciesCard
@@ -728,15 +728,32 @@ const SpeciesCarousel = ({ speciesData, recommendations, currentDomain }) => {//
             })}
           </div>
 
-          {/* Navigation Dots */}
-          <div className="carousel-dots">
-            {slides.map((_, index) => (
-              <span
-                key={index}
-                className={`dot ${index === currentSlide ? 'active' : ''}`}
-                onClick={() => moveToSlide(index)}
-              />
-            ))}
+          {/* Navigation Arrows with Next Slide Indicator */}
+          <div className="carousel-navigation">
+            <button
+              className="nav-button prev-button"
+              onClick={() => moveToSlide(Math.max(0, currentSlide - 1))}
+              disabled={currentSlide === 0}
+            >
+              ← Previous
+            </button>
+
+            {currentSlide < slides.length - 1 && (
+              <div className="next-slide-indicator">
+                <span className="indicator-text">Up next →</span>
+                <span className="next-category-name">
+                  {formatCategoryTitle(slides[currentSlide + 1])}
+                </span>
+              </div>
+            )}
+
+            <button
+              className="nav-button next-button"
+              onClick={() => moveToSlide(Math.min(slides.length - 1, currentSlide + 1))}
+              disabled={currentSlide === slides.length - 1}
+            >
+              Next →
+            </button>
           </div>
         </div>
 

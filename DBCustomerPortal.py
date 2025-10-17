@@ -266,7 +266,7 @@ def group_bacteria_for_carousel(bacteria_analysis: List[Dict]) -> Dict:
         print(f"  - {b.get('bacteria_name')}: {b.get('category')} / {b.get('percentage')}")
     try:
         carousel_groups = {
-            "bacteria":   {"title": "Top Bacterial Species", "status": "Good", "species": []},
+            "bacteria":   {"title": "Beneficial Species",    "status": "Good", "species": []},  # Changed title
             "probiotics": {"title": "Probiotic Organisms",   "status": "Good", "species": []},
             "pathogens":  {"title": "Pathogenic Bacteria",   "status": "Monitor","species": []},
             "virus":      {"title": "Viral Species",         "status": "Normal","species": []},
@@ -1801,4 +1801,4 @@ async def cleanup_expired_recommendations(
 if __name__ == "__main__":
     import uvicorn
     print("🚀 Starting MannBiome Unified API (Portal + Domain)")
-    uvicorn.run(app, host="127.0.0.1", port=8001)
+    uvicorn.run(app, host="127.0.0.1", port=8002)

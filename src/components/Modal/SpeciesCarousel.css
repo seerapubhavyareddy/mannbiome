@@ -12,7 +12,7 @@
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .species-carousel-container {
@@ -85,7 +85,7 @@
   padding: 16px;
   border: 1px solid #e0e0e0;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   width: 100%;
   box-sizing: border-box;
   min-height: 140px;
@@ -207,7 +207,103 @@
   margin-top: 4px;
 }
 
-/* Carousel dots - Enhanced for mobile */
+/* ================================
+   NAVIGATION ARROWS & INDICATORS
+   ================================ */
+
+.carousel-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 15px 20px;
+  gap: 20px;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #00BFA5, #009688);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 191, 165, 0.3);
+  min-width: 100px;
+}
+
+.nav-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #009688, #00796B);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 191, 165, 0.4);
+}
+
+.nav-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.next-slide-indicator {
+  flex: 1;
+  text-align: center;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 8px;
+  border: 2px dashed #00BFA5;
+}
+
+.indicator-text {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.next-category-name {
+  display: block;
+  font-size: 16px;
+  color: #00BFA5;
+  font-weight: 700;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .carousel-navigation {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .next-slide-indicator {
+    width: 100%;
+    order: -1;
+    /* Show indicator above buttons on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .next-category-name {
+    font-size: 14px;
+  }
+}
+
+/* Carousel dots - Enhanced for mobile
 .carousel-dots {
   display: flex;
   justify-content: center;
@@ -239,7 +335,7 @@
   background: #00BFA5;
   border-color: #00BFA5;
   box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.2);
-}
+} */
 
 /* Confidence Tooltip - Mobile Enhanced */
 .confidence-tooltip-wrapper {
@@ -263,7 +359,7 @@
   padding: 24px;
   background: white;
   border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   width: 100%;
   box-sizing: border-box;
 }
@@ -316,7 +412,7 @@
   border-radius: 12px;
   padding: 20px;
   border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   margin-bottom: 16px;
   width: 100%;
@@ -325,7 +421,7 @@
 
 .recommendation-item-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .recommendation-header {
@@ -776,6 +872,7 @@
    ================================ */
 
 @media (hover: none) and (pointer: coarse) {
+
   /* Larger touch targets for mobile devices */
   .dot {
     min-width: 16px;
@@ -797,7 +894,7 @@
   .recommendation-item-card:hover,
   .dot:hover {
     transform: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   /* Add touch-specific active states */
@@ -818,7 +915,8 @@
    HIGH DPI DISPLAY SUPPORT
    ================================ */
 
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
   .progress-marker {
     border-width: 1px;
   }
@@ -852,6 +950,7 @@
 
 /* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
+
   .carousel-track,
   .species-item,
   .recommendation-item-card,
@@ -889,6 +988,7 @@
 }
 
 @media (max-width: 768px) {
+
   .loading,
   .no-data {
     padding: 30px 15px;
@@ -897,6 +997,7 @@
 }
 
 @media (max-width: 480px) {
+
   .loading,
   .no-data {
     padding: 20px 10px;
@@ -906,8 +1007,13 @@
 
 /* Loading animation optimization for mobile */
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loading::before {
