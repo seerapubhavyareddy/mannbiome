@@ -201,6 +201,55 @@ def convert_abundance_to_percentage(abundance: float) -> float:
     except Exception:
         return 0.0
 
+def convert_abundance_to_percentile(all_abundances: list, current_abundance: float) -> float:
+    """Convert abundance to percentile rank (1-100 scale)"""
+    try:
+        if not all_abundances or current_abundance is None:
+            return 50.0  # Default to middle if no data
+        
+        # Sort abundances
+        sorted_abundances = sorted([a for a in all_abundances if a is not None and a > 0])
+        
+        if not sorted_abundances:
+            return 50.0
+        
+        # Calculate percentile rank
+        count_below = sum(1 for a in sorted_abundances if a < current_abundance)
+        count_equal = sum(1 for a in sorted_abundances if a == current_abundance)
+        
+        # Percentile formula: (count_below + 0.5 * count_equal) / total * 100
+        percentile = ((count_below + 0.5 * count_equal) / len(sorted_abundances)) * 100
+        
+        # Ensure it's between 1-100
+        return max(1.0, min(100.0, round(percentile, 1)))
+        
+    except Exception as e:
+        print(f"Error calculating percentile: {e}")
+        return 50.0
+
+def convert_abundance_to_friendly_level(abundance: float) -> str:
+    """Convert tiny abundance values to customer-friendly format"""
+    try:
+        if abundance is None or abundance <= 0:
+            return "0 units"
+        
+        # Convert to parts per million (ppm) for readability
+        ppm = abundance * 1_000_000
+        
+        if ppm >= 1000:
+            # Use thousands for large values
+            return f"{ppm/1000:.1f}K units"
+        elif ppm >= 1:
+            # Use regular number for moderate values
+            return f"{ppm:.1f} units"
+        else:
+            # Use decimal for very small values
+            return f"{ppm:.2f} units"
+            
+    except Exception as e:
+        print(f"Error converting abundance to friendly level: {e}")
+        return "N/A"
+
 def calculate_visualization_metrics(percentage: float) -> Tuple[float, float]:
     try:
         if not percentage or percentage <= 0:
@@ -217,9 +266,10 @@ def calculate_visualization_metrics(percentage: float) -> Tuple[float, float]:
     except Exception:
         return 10.0, 15.0
 
-def calculate_bacteria_status(abundance: float, evidence_strength: str, category: str) -> str:
+def calculate_bacteria_status(all_abundances: list, abundance: float, evidence_strength: str, category: str) -> str:
     try:
-        pct = convert_abundance_to_percentage(abundance)
+        # pct = convert_abundance_to_percentage(abundance)
+        pct = convert_abundance_to_percentile(all_abundances, abundance)
         weight = {"A":1.0, "B":0.8, "C":0.6}.get((evidence_strength or "C"), 0.6)
         wp = pct * weight
         if category == "beneficial":
@@ -297,7 +347,7 @@ def group_bacteria_for_carousel(bacteria_analysis: List[Dict]) -> Dict:
             species_data = {
                 "name": b["bacteria_name"],
                 "scientific_name": b["bacteria_name"],
-                "current_level": b["abundance"],
+                "current_level": b.get("current_level", convert_abundance_to_friendly_level(b["abundance"])), 
                 "percentage": b["percentage"],
                 "status": b["status"],
                 "evidence_strength": b["evidence_strength"],
@@ -389,6 +439,7 @@ def get_microbiome_data(customer_id: int, db: Session = Depends(get_db)):
 
         bacteria_data = (row.bacteria_data or [])
         analysis = []
+        all_abundances = [float(b.get('abundance', 0)) for b in bacteria_data]
         for item in bacteria_data:
             name = (item or {}).get("bacteria_name","").strip()
             abundance = float((item or {}).get("abundance",0))
@@ -397,11 +448,18 @@ def get_microbiome_data(customer_id: int, db: Session = Depends(get_db)):
             units = (item or {}).get("units","relative_abundance_fraction")
             cat = categorize_bacteria_by_name(name)
             pct = convert_abundance_to_percentage(abundance)
-            status = calculate_bacteria_status(abundance, ev, cat)
+            friendly_level = convert_abundance_to_friendly_level(abundance) 
+            status = calculate_bacteria_status(all_abundances, abundance, ev, cat)
             analysis.append({
-                "bacteria_name": name, "msp_id": msp_id, "abundance": abundance,
-                "percentage": pct, "evidence_strength": ev, "category": cat,
-                "status": status, "units": units
+                "bacteria_name": name, 
+                "msp_id": msp_id, 
+                "abundance": abundance,
+                "current_level": friendly_level,  # ✅ NEW - add this field
+                "percentage": pct, 
+                "evidence_strength": ev, 
+                "category": cat,
+                "status": status, 
+                "units": units
             })
         scores = calculate_overall_health_score(analysis)
         grouped = group_bacteria_for_carousel(analysis)
@@ -653,24 +711,30 @@ def _species_for_domain(customer_id: int, domain_id: int, db: Session) -> List[D
     if not dn:
         return []
     domain_name = str(dn.domain_name)
+    # FIRST: Collect all abundances for percentile calculation
+    all_abundances = [float((item or {}).get("abundance", 0)) for item in r.bacteria_data]
+
     out = []
     for item in r.bacteria_data:
         name = (item or {}).get("bacteria_name","").strip()
         if not name: continue
         abundance = float((item or {}).get("abundance",0))
         ev = (item or {}).get("evidence_strength","C")
-        msp_id = (item or {}).get("msp_id","")  # Add this line
+        msp_id = (item or {}).get("msp_id","")
         units = (item or {}).get("units","relative_abundance_fraction")
         matches = by_name.get(name.lower(), [])
         if not any(m.domain == domain_name for m in matches):
             continue
-        pct = convert_abundance_to_percentage(abundance)
+        pct = convert_abundance_to_percentile(all_abundances, abundance)  # ✅ Use percentile instead
+        friendly_level = convert_abundance_to_friendly_level(abundance)
         cat = categorize_bacteria_by_name(name)
-        status = calculate_bacteria_status(abundance, ev, cat)
+        status = calculate_bacteria_status(all_abundances, abundance, ev, cat)  # ✅ NOW CORRECT - 4 args
+        
         out.append({
             "bacteria_name": name,
-            "msp_id": msp_id,  # Add this line
+            "msp_id": msp_id,
             "abundance": abundance,
+            "current_level": friendly_level, 
             "percentage": pct,
             "evidence_strength": ev,
             "units": units,
@@ -957,7 +1021,7 @@ def get_bacteria_domain_data_from_reports(participant_id: str, db: Session) -> D
                 status = "NORMAL"
             
             # Calculate current level and percentage
-            current_level = f"{abundance * 1000000:.2f} units"
+            current_level = convert_abundance_to_friendly_level(abundance)  # ✅ NEW
             
             # Calculate percentage relative to optimal range midpoint
             optimal_mid = (optimal_min + optimal_max) / 2

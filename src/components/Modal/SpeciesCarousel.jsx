@@ -157,14 +157,24 @@ const SpeciesItem = ({ species, category }) => {
     return colorMap[status] || '#666';
   };
 
-  const formatAbundance = (abundance) => {
-    if (abundance < 0.000001) {
-      return abundance.toExponential(2);
-    } else if (abundance < 0.001) {
-      return abundance.toFixed(6);
-    } else {
-      return abundance.toFixed(4);
+  const formatAbundance = (value) => {
+    // If it's already a formatted string (like "7.8 units"), return it directly
+    if (typeof value === 'string') {
+      return value;
     }
+
+    // If it's a number, format it (fallback for legacy data)
+    if (typeof value === 'number') {
+      if (value < 0.000001) {
+        return value.toExponential(2);
+      } else if (value < 0.001) {
+        return value.toFixed(6);
+      } else {
+        return value.toFixed(4);
+      }
+    }
+
+    return 'N/A';
   };
 
   return (
@@ -182,12 +192,18 @@ const SpeciesItem = ({ species, category }) => {
       <div className="species-metrics">
         <div className="metric-row">
           <span className="metric-label">Current Level:</span>
-          <span className="metric-value">{formatAbundance(species.current_level)}</span>
+          <span className="metric-value">
+            {species.current_level || formatAbundance(species.abundance) || 'N/A'}
+          </span>
         </div>
         {species.percentage && (
           <div className="metric-row">
             <span className="metric-label">Percentage:</span>
-            <span className="metric-value">{formatPercentage(species.percentage)}</span>
+            <span className="metric-value">
+              {typeof species.percentage === 'number'
+                ? `${species.percentage.toFixed(1)}%`
+                : species.percentage}
+            </span>
           </div>
         )}
         {species.evidence_strength && (
